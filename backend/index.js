@@ -1,0 +1,10 @@
+const express = require("express")
+const dotenv = require("dotenv")
+const cors = require("cors")
+
+const app = express()
+app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+app.use("/api/matchscout",require("./routes/matchscout"))
+app.use("/api/pitscout",require("./routes/pitscout"))
