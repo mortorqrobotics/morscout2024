@@ -16,7 +16,7 @@ const MatchscoutPage = () => {
         }
       />
       <div className="line">
-        <BlueButton teamNum="1515"></BlueButton>
+        <BlueButton teamNums={[1515,4414,908,1515,1515,1515]}></BlueButton>
       </div>
     </div>
   );

@@ -1,21 +1,21 @@
 import React from "react";
 import "./blueButton.css";
 
-const blueButton = (props) => {
+const BlueButton = ({ teamNums }) => {
   return (
     <div>
       <div className="line">
-        <button className="blueButton">{props.teamNum}</button>
-        <button className="blueButton">{props.teamNum}</button>
-        <button className="blueButton">{props.teamNum}</button>
+        {teamNums.slice(0, 3).map((num, index) => (
+          <button key={index} className="blueButton">{num}</button>
+        ))}
       </div>
       <div className="line">
-        <button className="redButton">{props.teamNum}</button>
-        <button className="redButton">{props.teamNum}</button>
-        <button className="redButton">{props.teamNum}</button>
+        {teamNums.slice(3).map((num, index) => (
+          <button key={index + 3} className="redButton">{num}</button>
+        ))}
       </div>
     </div>
   );
 };
 
-export default blueButton;
+export default BlueButton;
