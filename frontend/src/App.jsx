@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./App.css";
 import MainPage from "./pages/mainPage/mainPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminPage from "./pages/adminPage/adminPage";
