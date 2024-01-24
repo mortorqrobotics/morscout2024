@@ -13,18 +13,16 @@ nav h2 {
     font-weight: bold;
     font-size: 50pt;
 }
-nav button {
-    position: absolute;
-    left: -50px;
-    top: 0;
-}
 nav div {
     flex-grow: 1;
     text-align: center;
 }
 .backIcon{
+    margin-top: 9px;
     padding: 0 !important;
     background-color: #0c0c0c;
+    width: 2em !important;
+    height: 2em !important;
 }
 
 
