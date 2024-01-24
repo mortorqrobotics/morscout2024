@@ -6,9 +6,9 @@ const Header = (props) => {
   return (
     <div>
         <nav>
-            <button >
-                <ArrowBackIcon style={{fill: " #fff" , backgroundColor: "black"} }/>
-            </button>
+            <div >
+                <ArrowBackIcon className='backIcon' style={{fill: " #fff" } }/>
+            </div>
             <div>
                 <h2>
                     {props.headerText}

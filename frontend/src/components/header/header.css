@@ -22,5 +22,9 @@ nav div {
     flex-grow: 1;
     text-align: center;
 }
+.backIcon{
+    padding: 0 !important;
+    background-color: #0c0c0c;
+}
 
 
