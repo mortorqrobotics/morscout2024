@@ -1,7 +1,7 @@
 import React from 'react'
 import PitButton from '../../components/pitButton/pitButton'
 import Header from '../../components/header/header'
-
+import { Link } from 'react-router-dom'
 const Pitscoutpage = () => {
   return (
     <div>
@@ -11,7 +11,10 @@ const Pitscoutpage = () => {
           <span style={{color:"#FFFFFF"}}>Scout</span>
         </>
       } />
-      <PitButton teamNum="1515"/>
+      <Link to="/pit-team-choice/1515">
+        <PitButton teamNum="1515"/>
+      </Link>
+      
       <PitButton teamNum="1515"/>
       <PitButton teamNum="1515"/>
       <PitButton teamNum="1515"/>
