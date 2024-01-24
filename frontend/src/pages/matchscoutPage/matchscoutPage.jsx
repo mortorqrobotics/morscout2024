@@ -1,5 +1,7 @@
 import React from "react";
+import "./matchscoutPage.css";
 import Header from "../../components/header/header";
+import BlueButton from "../../components/blueButton/blueButton";
 
 const MatchscoutPage = () => {
   return (
@@ -13,6 +15,9 @@ const MatchscoutPage = () => {
           </>
         }
       />
+      <div className="line">
+        <BlueButton teamNum="1515"></BlueButton>
+      </div>
     </div>
   );
 };

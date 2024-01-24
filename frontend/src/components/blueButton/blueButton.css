@@ -1,0 +1,27 @@
+.line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.blueButton{
+    width: 115px;
+    height: 65px;
+    text-align: center;
+    background-color:#23B0FF ;
+    color: white;
+    margin: 10px 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    /* 40 */
+}
+.redButton{
+    width: 115px;
+    height: 65px;
+    text-align: center;
+    background-color:#E42323 ;
+    color: white;
+    margin: 10px 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    /* 40 */
+}
