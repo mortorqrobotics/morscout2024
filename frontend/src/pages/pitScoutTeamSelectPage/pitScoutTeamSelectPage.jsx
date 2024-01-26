@@ -1,7 +1,6 @@
 import React from "react";
 import PitButton from "../../components/pitButton/pitButton";
 import Header from "../../components/header/header";
-import BlueButton from "../../components/blueButton/blueButton";
 
 import { Link } from "react-router-dom";
 const Pitscoutpage = () => {

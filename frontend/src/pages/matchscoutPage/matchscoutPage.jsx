@@ -1,7 +1,7 @@
 import React from "react";
 import "./matchscoutPage.css";
 import Header from "../../components/header/header";
-import BlueButton from "../../components/blueButton/blueButton";
+import MatchButton from "../../components/matchButton/matchButton";
 
 const MatchscoutPage = () => {
   return (
@@ -15,8 +15,10 @@ const MatchscoutPage = () => {
           </>
         }
       />
-      <div className="line">
-        <BlueButton teamNums={[1515,4414,908,1515,1515,1515]}></BlueButton>
+      <div className="match-buttons">
+        <MatchButton teamNums={[1515,4414,908,1515,1515,1515]}></MatchButton>
+        <MatchButton teamNums={[1515,4414,908,1515,1515,1515]}></MatchButton>
+        <MatchButton teamNums={[1515,4414,908,1515,1515,1515]}></MatchButton>
       </div>
     </div>
   );
