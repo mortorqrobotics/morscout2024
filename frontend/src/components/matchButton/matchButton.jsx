@@ -1,21 +1,24 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./matchButton.css";
 
-const MatchButton = ({ teamNums }) => {
+const MatchButton = ({ teamNums, matchNum }) => {
   return (
     <div>
-      <h2 className="match-heading">
-        Match 1
-      </h2>
-      <hr />  
+      <h2 className="match-heading">{matchNum}</h2>
+      <hr />
       <div className="line">
         {teamNums.slice(0, 3).map((num, index) => (
-          <button key={index} className="blueButton">{num}</button>
+          <Link key={index} to={`/matchscout-team-form/${num}`}>
+            <button className="blueButton">{num}</button>
+          </Link>
         ))}
       </div>
       <div className="line">
         {teamNums.slice(3).map((num, index) => (
-          <button key={index + 3} className="redButton">{num}</button>
+          <Link key={index + 3} to={`/matchscout-team-form/${num}`}>
+            <button className="redButton">{num}</button>
+          </Link>
         ))}
       </div>
     </div>

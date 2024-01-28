@@ -36,8 +36,9 @@ export const getEventMatches = async () => {
           console.log(data)
           return data.map((match) => ({
             red_team: match.alliances.red.team_keys,
-            blue_team: match.blue.team_keys,
-            matchNum: match.match_number
+            blue_team: match.alliances.blue.team_keys,
+            matchNum: match.match_number,
+            compLevel: match.comp_level,
           }));
     } catch (error) {
         throw new Error(error)
