@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Header from "../../components/header/header";
-
+import { useParams } from "react-router-dom";
 const AutoScoutForm = () => {
+  let { teamNumber } = useParams();
   const [formData, setFormData] = useState({
     teamName: "",
     allianceColor: "",
@@ -26,7 +27,7 @@ const AutoScoutForm = () => {
   return (
     <div>
       <Header
-        toWhere="/matchscout-team-choice"
+        toWhere={`/matchscout-team-form/${teamNumber}`}
         headerText={
           <>
             <span style={{ color: "#FFFFFF" }}>Auto</span>

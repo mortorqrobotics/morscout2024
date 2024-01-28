@@ -1,7 +1,10 @@
 import { useState } from "react";
 import Header from "../../components/header/header";
+import { useParams } from "react-router-dom";
 
 const TeleopScoutForm = () => {
+  let { teamNumber } = useParams();
+
   const [formData, setFormData] = useState({
     teamName: "",
     allianceColor: "",
@@ -26,7 +29,7 @@ const TeleopScoutForm = () => {
   return (
     <div>
       <Header
-        toWhere="/matchscout-team-choice"
+        toWhere={`/matchscout-team-form/${teamNumber}`}
         headerText={
           <>
             <span style={{ color: "#FFFFFF" }}>Teleop</span>
