@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "../../components/header/header";
 
-const MatchScoutForm = () => {
+const AutoScoutForm = () => {
   const [formData, setFormData] = useState({
     teamName: "",
     allianceColor: "",
@@ -29,8 +29,7 @@ const MatchScoutForm = () => {
         toWhere="/matchscout-team-choice"
         headerText={
           <>
-            <span style={{ color: "#FF7F23" }}>Match </span>
-            <span style={{ color: "#FFFFFF" }}>Scout</span>
+            <span style={{ color: "#FFFFFF" }}>Auto</span>
           </>
         }
       />
@@ -72,4 +71,4 @@ const MatchScoutForm = () => {
   );
 };
 
-export default MatchScoutForm;
+export default AutoScoutForm;
