@@ -2,7 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./matchButton.css";
 
+
 const MatchButton = ({ teamNums, matchNum }) => {
+  
   return (
     <div>
       <h2 className="match-heading">{matchNum}</h2>
