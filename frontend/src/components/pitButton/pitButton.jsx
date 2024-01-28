@@ -1,11 +1,10 @@
-import React from 'react'
 import "./pitButton.css"
 
 const PitButton = (props) => {
   return (
     <div>
         <button className='pitButton'>
-            {props.teamNum}
+            {props.text}
         </button>
     </div>
   )
