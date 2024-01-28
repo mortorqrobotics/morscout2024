@@ -3,7 +3,7 @@ import DefaultBtn from "../../components/defaultBtn/defaultBtn";
 import "./selectFormPage.css"
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-const SelectFormPage = ({num}) => {
+const SelectFormPage = () => {
     let { teamNumber } = useParams();
   return (
     <div className="btnAlign">
