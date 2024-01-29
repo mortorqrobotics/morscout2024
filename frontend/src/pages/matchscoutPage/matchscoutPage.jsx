@@ -13,15 +13,19 @@ const MatchscoutPage = () => {
     setLoading(true);
     getEventMatches()
       .then((data) => {
-        const sortedMatches = data
-          .filter((match) => match.compLevel === "qm")
-          .sort((a, b) => a.matchNum - b.matchNum);
+        const sortedMatches = data.sort((a, b) => {
+          const compLevelOrder = { "qm": 1, "sf": 2, "f": 3 };
+          const compLevelComparison = compLevelOrder[a.compLevel] - compLevelOrder[b.compLevel];
+          return compLevelComparison === 0
+            ? a.matchNum - b.matchNum
+            : compLevelComparison;
+        });
 
         setMatches(sortedMatches);
       })
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
-  }, []); // Remove setLoading from the dependency array
+  }, []);
 
   return (
     <div>
@@ -40,20 +44,28 @@ const MatchscoutPage = () => {
         ) : error ? (
           <h1>{error.message}</h1>
         ) : matches.length > 0 ? (
-          matches.map((match) => (
-            <MatchButton
-              key={match.matchNum}
-              matchNum={`Match ${match.matchNum}`}
-              teamNums={[
-                ...match.red_team.map((team) => team.substring(3)),
-                ...match.blue_team.map((team) => team.substring(3)),
-              ]}
-            />
-          ))
+          <div className="Matches">
+            <p className="matchesTitleText">MATCHES</p>
+            {matches.map((match, index) => (
+              <div className="matchAndHeading" key={index}>
+                <Heading>{`MATCH ${index + 1}`}</Heading>
+                <MatchButton
+                  
+                  teamNums={[
+                    ...match.red_team.map((team) => team.substring(3)),
+                    ...match.blue_team.map((team) => team.substring(3)),
+                  ]}
+                />
+              </div>
+            ))}
+          </div>
         ) : null}
       </div>
     </div>
   );
 };
+
+// Assume Heading is a component you've defined elsewhere
+const Heading = ({ children }) => <h2 className="match-heading">{children}</h2>;
 
 export default MatchscoutPage;
