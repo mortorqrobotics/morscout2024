@@ -13,7 +13,15 @@ const MatchscoutPage = () => {
     setLoading(true);
     getEventMatches()
       .then((data) => {
-        setMatches(data);
+        const sortedMatches = data.sort((a, b) => {
+          const compLevelOrder = { "qm": 1, "sf": 2, "s": 3 };
+          const compLevelComparison = compLevelOrder[a.compLevel] - compLevelOrder[b.compLevel];
+          return compLevelComparison === 0
+            ? a.matchNum - b.matchNum
+            : compLevelComparison;
+        });
+
+        setMatches(sortedMatches);
       })
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
