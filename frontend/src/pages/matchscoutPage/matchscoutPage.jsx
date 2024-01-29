@@ -13,15 +13,7 @@ const MatchscoutPage = () => {
     setLoading(true);
     getEventMatches()
       .then((data) => {
-        const sortedMatches = data.sort((a, b) => {
-          const compLevelOrder = { "qm": 1, "sf": 2, "f": 3 };
-          const compLevelComparison = compLevelOrder[a.compLevel] - compLevelOrder[b.compLevel];
-          return compLevelComparison === 0
-            ? a.matchNum - b.matchNum
-            : compLevelComparison;
-        });
-
-        setMatches(sortedMatches);
+        setMatches(data);
       })
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
@@ -50,7 +42,6 @@ const MatchscoutPage = () => {
               <div className="matchAndHeading" key={index}>
                 <Heading>{`MATCH ${index + 1}`}</Heading>
                 <MatchButton
-                  
                   teamNums={[
                     ...match.red_team.map((team) => team.substring(3)),
                     ...match.blue_team.map((team) => team.substring(3)),
