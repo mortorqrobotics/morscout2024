@@ -13,13 +13,9 @@ const MatchscoutPage = () => {
     setLoading(true);
     getEventMatches()
       .then((data) => {
-        const sortedMatches = data.sort((a, b) => {
-          const compLevelOrder = { "qm": 1, "sf": 2, "s": 3 };
-          const compLevelComparison = compLevelOrder[a.compLevel] - compLevelOrder[b.compLevel];
-          return compLevelComparison === 0
-            ? a.matchNum - b.matchNum
-            : compLevelComparison;
-        });
+        const qmMatches = data.filter((match) => match.compLevel === "qm");
+
+        const sortedMatches = qmMatches.sort((a, b) => a.matchNum - b.matchNum);
 
         setMatches(sortedMatches);
       })
