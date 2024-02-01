@@ -1,31 +1,41 @@
-import { useState } from "react";
+// PitScoutForm.jsx
+import React, { useState } from "react";
+import TextInput from "../../components/textInput/textInput";
+import NumberInput from "../../components/numberInput/numberInput";
+import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
-const PitScoutForm = () => {
-  const [formData, setFormData] = useState({
-    teamName: "",
-    robotName: "",
-    robotWeight: "",
-    // Add more form fields as needed
+
+function PitScoutForm() {
+  const [formState, setFormState] = useState({
+    weight: "",
+    drivetrain: "",
+    numberOfMotors: "",
+    example1: "",
+    example2: "",
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your logic to handle form submission, e.g., send data to a server or perform local actions
-    console.log("Pit Scout Form submitted:", formData);
+    // Process the submission here (e.g., send to an API or log to console)
+    console.log(formState);
+    // Reset form state if needed
+    setFormState({
+      weight: "",
+      drivetrain: "",
+      numberOfMotors: "",
+      example1: "",
+      example2: "",
+    });
   };
 
   return (
     <div>
       <Header
-        toWhere="/pit-team-choice"
+        toWhere={"/pit-team-choice"}
         headerText={
           <>
             <span style={{ color: "#FF7F23" }}>Pit </span>
@@ -33,43 +43,30 @@ const PitScoutForm = () => {
           </>
         }
       />
-
       <form onSubmit={handleSubmit}>
-        <label>
-          Team Name:
-          <input
-            type="text"
-            name="teamName"
-            value={formData.teamName}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Robot Name:
-          <input
-            type="text"
-            name="robotName"
-            value={formData.robotName}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Robot Weight:
-          <input
-            type="text"
-            name="robotWeight"
-            value={formData.robotWeight}
-            onChange={handleChange}
-          />
-        </label>
-        {/* Add more form fields here as needed */}
-        <br />
-        <button type="submit">Submit</button>
+        <TextInput
+          label="Weight"
+          name="weight"
+          value={formState.weight}
+          onChange={handleChange}
+        />
+        <TextInput
+          label="Drivetrain"
+          name="drivetrain"
+          value={formState.drivetrain}
+          onChange={handleChange}
+        />
+        <NumberInput
+          label="Number of Motors"
+          name="numberOfMotors"
+          value={formState.numberOfMotors}
+          onChange={handleChange}
+        />
+        {/* Add other form inputs as needed */}
+        <SubmitButton label="Submit" />
       </form>
     </div>
   );
-};
+}
 
 export default PitScoutForm;
