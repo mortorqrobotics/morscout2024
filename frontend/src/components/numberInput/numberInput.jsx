@@ -1,11 +1,13 @@
 // NumberInput.jsx
 import React from 'react';
+import "./numberInput.css"
 
 const NumberInput = ({ label, name, value, onChange }) => {
   return (
-    <div>
-      <label htmlFor={name}>{label}</label>
+    <div className='inputField'>
+      <label htmlFor={name}>{label} :</label>
       <input
+        className='numInput'
         type="number"
         id={name}
         name={name}

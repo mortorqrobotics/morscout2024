@@ -4,7 +4,7 @@ import TextInput from "../../components/textInput/textInput";
 import NumberInput from "../../components/numberInput/numberInput";
 import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
-
+import "./PitScoutForm.css";
 function PitScoutForm() {
   const [formState, setFormState] = useState({
     weight: "",
@@ -43,8 +43,8 @@ function PitScoutForm() {
           </>
         }
       />
-      <form onSubmit={handleSubmit}>
-        <TextInput
+      <form onSubmit={handleSubmit} className="pitForm">
+        <NumberInput
           label="Weight"
           name="weight"
           value={formState.weight}
@@ -62,7 +62,6 @@ function PitScoutForm() {
           value={formState.numberOfMotors}
           onChange={handleChange}
         />
-        {/* Add other form inputs as needed */}
         <SubmitButton label="Submit" />
       </form>
     </div>
