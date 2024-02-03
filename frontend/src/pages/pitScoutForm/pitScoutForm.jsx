@@ -5,6 +5,7 @@ import NumberInput from "../../components/numberInput/numberInput";
 import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
 import "./PitScoutForm.css";
+import Dropdown from "../../components/dropdown/dropdown";
 function PitScoutForm() {
   const [formState, setFormState] = useState({
     weight: "",
@@ -56,6 +57,7 @@ function PitScoutForm() {
           value={formState.drivetrain}
           onChange={handleChange}
         />
+        <Dropdown options={["hahah","hahaha"]}/>
         <NumberInput
           label="Number of Motors"
           name="numberOfMotors"
