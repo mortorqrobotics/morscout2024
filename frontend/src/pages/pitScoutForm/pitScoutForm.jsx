@@ -1,36 +1,34 @@
+// src/components/PitScoutForm.js
 import React, { useState, useEffect } from "react";
 import TextInput from "../../components/textInput/textInput";
 import NumberInput from "../../components/numberInput/numberInput";
 import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
 import Dropdown from "../../components/dropdown/dropdown";
-import "./pitScoutForm.css";
-import { toast } from "react-hot-toast"; // Import toast from react-hot-toast
+import { toast } from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
-function PitScoutForm() {
+const PitScoutForm = () => {
   let { teamNumber } = useParams();
 
   const [formState, setFormState] = useState({
     weight: "",
+    yourName: "",
     drivetrain: "",
     numberOfMotors: "",
-    dropdownValue: "", // Set the default value here
+    dropdownValue: "",
     teamNumber: teamNumber,
   });
 
   useEffect(() => {
-    // Set the default value when the component mounts
     setFormState((prevState) => ({
       ...prevState,
       dropdownValue: "Something 1",
     }));
-  }, []); // Empty dependency array to run this effect only once when the component mounts
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(`handleChange - Event details:`, e);
-    console.log(`handleChange - Setting ${name} to: ${value}`);
     setFormState((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -39,9 +37,6 @@ function PitScoutForm() {
       ...prevState,
       dropdownValue: selectedValue,
     }));
-    console.log(
-      `handleDropdownSelect - Setting dropdownValue to: ${selectedValue}`
-    );
   };
 
   const handleSubmit = async (e) => {
@@ -53,33 +48,39 @@ function PitScoutForm() {
 
     if (isFormIncomplete) {
       toast.error("Form is not filled out completely");
-      console.log("Form is not filled out completely");
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/submit-form/${teamNumber}`, {
+      const response = await fetch(`http://localhost:8000/submit-pitform/${teamNumber}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formState),
+        body: JSON.stringify({
+          yourName: formState.yourName,
+          weight: formState.weight,
+          drivetrain: formState.drivetrain,
+          numberOfMotors: formState.numberOfMotors,
+          dropdownValue: formState.dropdownValue,
+          // Include other form fields here
+        }),
       });
 
       if (response.ok) {
-        console.log("Form submitted successfully");
-        toast.success("Form submitted successfully");
-        // Set default values or leave them blank based on your requirement
+        console.log("Pit form submitted successfully");
+        toast.success("Pit form submitted successfully");
         setFormState({
           weight: "",
           drivetrain: "",
+          yourName: "",
           numberOfMotors: "",
-          dropdownValue: "Something 1", // Set the default value here
+          dropdownValue: "Something 1",
           teamNumber: teamNumber,
         });
       } else {
-        console.error("Form submission failed");
-        toast.error("Form submission failed");
+        console.error("Pit form submission failed");
+        toast.error("Pit form submission failed");
       }
     } catch (error) {
       console.error(error);
@@ -99,6 +100,13 @@ function PitScoutForm() {
         }
       />
       <form onSubmit={handleSubmit} className="pitForm">
+        <TextInput
+          label="Your Name"
+          name="yourName"
+          value={formState.yourName}
+          onChange={handleChange}
+        />
+
         <NumberInput
           label="Weight"
           name="weight"
@@ -116,7 +124,7 @@ function PitScoutForm() {
           label="Choose Something"
           options={["Something 1", "Something 2"]}
           onSelect={handleDropdownSelect}
-          defaultOption={formState.dropdownValue} // Set the default value based on the state
+          defaultOption={formState.dropdownValue}
         />
 
         <NumberInput
@@ -129,6 +137,6 @@ function PitScoutForm() {
       </form>
     </div>
   );
-}
+};
 
 export default PitScoutForm;

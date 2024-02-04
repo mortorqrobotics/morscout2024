@@ -1,14 +1,18 @@
-import { useState } from "react";
+// src/components/TeleopScoutForm.js
+import React, { useState } from "react";
 import Header from "../../components/header/header";
 import { useParams } from "react-router-dom";
+import TextInput from "../../components/textInput/textInput";
+import { toast } from "react-hot-toast";
+import SubmitButton from "../../components/submitBtn/submitBtn";
 
 const TeleopScoutForm = () => {
   let { teamNumber } = useParams();
-
   const [formData, setFormData] = useState({
     teamName: "",
     allianceColor: "",
     matchNumber: "",
+    yourName: "",
     // Add more form fields as needed
   });
 
@@ -20,10 +24,49 @@ const TeleopScoutForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your logic to handle form submission, e.g., send data to a server or perform local actions
-    console.log("Form submitted:", formData);
+
+    const isFormIncomplete = Object.values(formData).some(
+      (value) => value === "" || value === undefined
+    );
+
+    if (isFormIncomplete) {
+      toast.error("Form is not filled out completely");
+      console.log("Form is not filled out completely");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/submit-scout/${teamNumber}/teleopscout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        console.log("TeleopScout form submitted successfully");
+        toast.success("TeleopScout form submitted successfully");
+        setFormData({
+          teamName: "",
+          allianceColor: "",
+          matchNumber: "",
+          yourName: "",
+          // Reset other form fields as needed
+        });
+      } else {
+        console.error("TeleopScout form submission failed");
+        toast.error("TeleopScout form submission failed");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Internal Server Error");
+    }
   };
 
   return (
@@ -36,39 +79,35 @@ const TeleopScoutForm = () => {
           </>
         }
       />
-      <form onSubmit={handleSubmit}>
-        <label>
-          Team Name:
-          <input
-            type="text"
-            name="teamName"
-            value={formData.teamName}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Alliance Color:
-          <input
-            type="text"
-            name="allianceColor"
-            value={formData.allianceColor}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Match Number:
-          <input
-            type="text"
-            name="matchNumber"
-            value={formData.matchNumber}
-            onChange={handleChange}
-          />
-        </label>
-        {/* Add more form fields here as needed */}
-        <br />
-        <button type="submit">Submit</button>
+      <form onSubmit={handleSubmit} className="pitForm">
+        <TextInput
+          label="Your Name"
+          name="yourName"
+          value={formData.yourName}
+          onChange={handleChange}
+        />
+
+        <TextInput
+          label="Team Name"
+          name="teamName"
+          value={formData.teamName}
+          onChange={handleChange}
+        />
+
+        <TextInput
+          label="Alliance Color"
+          name="allianceColor"
+          value={formData.allianceColor}
+          onChange={handleChange}
+        />
+
+        <TextInput
+          label="Match Number"
+          name="matchNumber"
+          value={formData.matchNumber}
+          onChange={handleChange}
+        />
+        <SubmitButton label="Submit" />
       </form>
     </div>
   );
