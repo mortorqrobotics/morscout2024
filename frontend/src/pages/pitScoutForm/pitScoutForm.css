@@ -1,6 +1,5 @@
- .inputField{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
- }
+.pitForm{
+   display: flex;
+   flex-direction:column;
+   gap: 15px;
+}

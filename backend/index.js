@@ -18,11 +18,17 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-app.post("/submit-form", async (req, res) => {
+app.post("/submit-form/:teamNumber", async (req, res) => {
   try {
+    const teamNumber = req.params.teamNumber;
     const formData = req.body;
-    // Add the form data to Firestore
-    await db.collection("pitScoutForms").add(formData);
+
+    // Use teamNumber as the document ID
+    // Create a 'pitScout' field and store form data within it
+    await db.collection("pitScout").doc(teamNumber).set({
+      pitScout: formData,
+    });
+
     res.status(200).json({ success: true });
   } catch (error) {
     console.error(error);

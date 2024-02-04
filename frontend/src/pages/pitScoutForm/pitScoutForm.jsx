@@ -1,18 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextInput from "../../components/textInput/textInput";
 import NumberInput from "../../components/numberInput/numberInput";
 import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
 import Dropdown from "../../components/dropdown/dropdown";
+import "./pitScoutForm.css";
 import { toast } from "react-hot-toast"; // Import toast from react-hot-toast
+import { useParams } from "react-router-dom";
 
 function PitScoutForm() {
+  let { teamNumber } = useParams();
+
   const [formState, setFormState] = useState({
     weight: "",
     drivetrain: "",
     numberOfMotors: "",
-    dropdownValue: "", // Add a property for the dropdown value
+    dropdownValue: "", // Set the default value here
+    teamNumber: teamNumber,
   });
+
+  useEffect(() => {
+    // Set the default value when the component mounts
+    setFormState((prevState) => ({
+      ...prevState,
+      dropdownValue: "Something 1",
+    }));
+  }, []); // Empty dependency array to run this effect only once when the component mounts
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +58,7 @@ function PitScoutForm() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/submit-form", {
+      const response = await fetch(`http://localhost:8000/submit-form/${teamNumber}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +74,8 @@ function PitScoutForm() {
           weight: "",
           drivetrain: "",
           numberOfMotors: "",
-          dropdownValue: "",
+          dropdownValue: "Something 1", // Set the default value here
+          teamNumber: teamNumber,
         });
       } else {
         console.error("Form submission failed");
@@ -97,10 +111,12 @@ function PitScoutForm() {
           value={formState.drivetrain}
           onChange={handleChange}
         />
+
         <Dropdown
           label="Choose Something"
           options={["Something 1", "Something 2"]}
           onSelect={handleDropdownSelect}
+          defaultOption={formState.dropdownValue} // Set the default value based on the state
         />
 
         <NumberInput
