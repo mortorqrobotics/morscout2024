@@ -18,32 +18,41 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-const submitForm = async (req, res, formType) => {
+const submitScoutForm = async (req, res, scoutType, collectionName) => {
   try {
     const { teamNumber } = req.params;
     const { yourName, ...formFields } = req.body;
 
     // Check if the teamNumber document exists in the specified collection
-    const teamDoc = await db.collection(formType).doc(teamNumber).get();
+    const teamDocRef = db.collection(collectionName).doc(teamNumber);
+    const teamDoc = await teamDocRef.get();
 
     if (teamDoc.exists) {
-      // If the document exists, create a new submission with the person's name
+      const scoutData = teamDoc.data()[scoutType] || {};
+
+      // Create a new submission with the person's name
+      const newSubmissionKey = `submission${Object.keys(scoutData).length + 1}`;
       const newSubmission = {
         [yourName]: formFields,
       };
 
-      // Update the nested entry
-      const submissionsCount = Object.keys(teamDoc.data() || {}).length + 1;
-      await db.collection(formType).doc(teamNumber).update({
-        [submissionsCount]: newSubmission,
+      // Append the new submission to the existing scout data
+      await teamDocRef.update({
+        [`${scoutType}.${newSubmissionKey}`]: newSubmission,
       });
     } else {
       // If the document doesn't exist, create a new one
-      await db.collection(formType).doc(teamNumber).set({
-        1: {
+      const initialData = {
+        [`submission1`]: {
           [yourName]: formFields,
         },
-      });
+      };
+
+      const dataToSet = {
+        [scoutType]: initialData,
+      };
+
+      await teamDocRef.set(dataToSet);
     }
 
     res.status(200).json({ success: true });
@@ -53,16 +62,19 @@ const submitForm = async (req, res, formType) => {
   }
 };
 
-// Endpoint for pitScout form
-app.post("/submit-pitform/:teamNumber", async (req, res) => {
-  submitForm(req, res, "pitScout");
+// Endpoint for autoscout form
+app.post("/submit-autoscout/:teamNumber", async (req, res) => {
+  submitScoutForm(req, res, "autoscout", "matchscout");
 });
 
-// Endpoint for autoScout and teleopScout form
-app.post("/submit-scout/:teamNumber/:scoutType", async (req, res) => {
-  const scoutType = req.params.scoutType; // Get the scout type from the URL parameter
-  const formType = `${scoutType}`; // Create the form type based on the scout type
-  submitForm(req, res, formType);
+// Endpoint for teleopscout form
+app.post("/submit-teleopscout/:teamNumber", async (req, res) => {
+  submitScoutForm(req, res, "teleopscout", "matchscout");
+});
+
+// Endpoint for pitscout form
+app.post("/submit-pitscout/:teamNumber", async (req, res) => {
+  submitScoutForm(req, res, "pitscout", "pitscout");
 });
 
 const PORT = process.env.PORT || 8000;

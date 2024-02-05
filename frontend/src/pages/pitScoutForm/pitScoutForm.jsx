@@ -52,20 +52,23 @@ const PitScoutForm = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/submit-pitform/${teamNumber}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          yourName: formState.yourName,
-          weight: formState.weight,
-          drivetrain: formState.drivetrain,
-          numberOfMotors: formState.numberOfMotors,
-          dropdownValue: formState.dropdownValue,
-          // Include other form fields here
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:8000/submit-pitscout/${teamNumber}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            yourName: formState.yourName,
+            weight: formState.weight,
+            drivetrain: formState.drivetrain,
+            numberOfMotors: formState.numberOfMotors,
+            dropdownValue: formState.dropdownValue,
+            // Include other form fields here
+          }),
+        }
+      );
 
       if (response.ok) {
         console.log("Pit form submitted successfully");

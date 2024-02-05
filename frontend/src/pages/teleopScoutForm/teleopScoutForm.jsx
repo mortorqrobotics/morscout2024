@@ -39,7 +39,7 @@ const TeleopScoutForm = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/submit-scout/${teamNumber}/teleopscout`,
+        `http://localhost:8000/submit-teleopscout/${teamNumber}`,
         {
           method: "POST",
           headers: {

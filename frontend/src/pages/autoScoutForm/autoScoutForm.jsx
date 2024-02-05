@@ -1,4 +1,4 @@
-// AutoScoutForm.js
+// src/components/AutoScoutForm.js
 import React, { useState } from "react";
 import Header from "../../components/header/header";
 import { useParams } from "react-router-dom";
@@ -9,10 +9,10 @@ import SubmitButton from "../../components/submitBtn/submitBtn";
 const AutoScoutForm = () => {
   let { teamNumber } = useParams();
   const [formData, setFormData] = useState({
+    yourName: "",
     teamName: "",
     allianceColor: "",
     matchNumber: "",
-    yourName: "",
     // Add more form fields as needed
   });
 
@@ -39,7 +39,7 @@ const AutoScoutForm = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/submit-scout/${teamNumber}/autoscout`, // or teleopscout
+        `http://localhost:8000/submit-autoscout/${teamNumber}`,
         {
           method: "POST",
           headers: {
@@ -53,10 +53,10 @@ const AutoScoutForm = () => {
         console.log("AutoScout form submitted successfully");
         toast.success("AutoScout form submitted successfully");
         setFormData({
+          yourName: "",
           teamName: "",
           allianceColor: "",
           matchNumber: "",
-          yourName: "",
           // Reset other form fields as needed
         });
       } else {
