@@ -8,7 +8,15 @@ const SelectFormPage = () => {
   let { teamNumber } = useParams();
   return (
     <div className="">
-      <Header toWhere={"/matchscout-team-choice"}/>
+      <Header
+        toWhere="/matchscout-team-choice"
+        headerText={
+          <>
+            <span style={{ color: "#FF7F23" }}>Match </span>
+            <span style={{ color: "#FFFFFF" }}>Scout</span>
+          </>
+        }
+      />
       <div className="btnAlign">
         <Link to={`/matchscout-team-form/${teamNumber}/auto`}>
           <DefaultBtn backgroundColor="#FF640C" text="Auto" />
