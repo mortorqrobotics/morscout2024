@@ -4,25 +4,25 @@
     align-items: center;
 }
 .blueButton{
-    width: 115px;
-    height: 65px;
+    width: 130px;
+    height: 80px;
     text-align: center;
     background-color:#23B0FF ;
     color: white;
     margin: 10px 0;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
     /* 40 */
 }
 .redButton{
-    width: 115px;
-    height: 65px;
+    width: 130px;
+    height: 80px;
     text-align: center;
     background-color:#E42323 ;
     color: white;
     margin: 10px 0;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
     /* 40 */
 }
 .match-heading{
