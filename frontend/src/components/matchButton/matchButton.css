@@ -4,8 +4,8 @@
     align-items: center;
 }
 .blueButton{
-    width: 130px;
-    height: 80px;
+    width: 110px;
+    height: 60px;
     text-align: center;
     background-color:#23B0FF ;
     color: white;
@@ -15,8 +15,8 @@
     /* 40 */
 }
 .redButton{
-    width: 130px;
-    height: 80px;
+    width: 110px;
+    height: 60px;
     text-align: center;
     background-color:#E42323 ;
     color: white;
