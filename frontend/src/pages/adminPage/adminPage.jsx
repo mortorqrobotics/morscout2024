@@ -9,11 +9,11 @@ const AdminPage = () => {
         toWhere="/"
         headerText={
           <>
-            <span style={{ color: "#FF7F23" }}>Admin </span>
+            <span style={{ color: "#FF5F00" }}>Admin </span>
           </>
         }
       />
-      <DefaultBtn text="Pull data" backgroundColor="#FF7F23   " />
+      <DefaultBtn text="Pull data" backgroundColor="#FF5F00" />
     </div>
   );
 };  

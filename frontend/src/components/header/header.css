@@ -7,11 +7,20 @@ nav {
     position: relative;
     height: 60px;
     margin-bottom: 30px;
+    left: -40px;
+    top: 10px;
 }
+
+@media screen and (max-width:400px) {
+    nav {
+       left: -10px; 
+    }
+}
+
 nav h2 {
     font-family: 'Maven Pro', sans-serif;
     font-weight: bold;
-    font-size: 50pt;
+    font-size: 40pt;
 }
 nav div {
     flex-grow: 1;

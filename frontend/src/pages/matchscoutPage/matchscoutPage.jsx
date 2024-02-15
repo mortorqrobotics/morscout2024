@@ -29,7 +29,7 @@ const MatchscoutPage = () => {
         toWhere="/"
         headerText={
           <>
-            <span style={{ color: "#FF7F23" }}>Match </span>
+            <span style={{ color: "#FF5F00" }}>Match </span>
             <span style={{ color: "#FFFFFF" }}>Scout</span>
           </>
         }
@@ -41,7 +41,7 @@ const MatchscoutPage = () => {
           <h1>{error.message}</h1>
         ) : matches.length > 0 ? (
           <div className="Matches">
-            <p className="matchesTitleText">MATCHES</p>
+            
             {matches.map((match, index) => (
               <div className="matchAndHeading" key={index}>
                 <Heading>{`MATCH ${index + 1}`}</Heading>

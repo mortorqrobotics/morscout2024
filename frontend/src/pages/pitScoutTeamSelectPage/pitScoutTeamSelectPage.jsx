@@ -21,7 +21,7 @@ const Pitscoutpage = () => {
         toWhere="/"
         headerText={
           <>
-            <span style={{ color: "#FF7F23" }}>Pit </span>
+            <span style={{ color: "#FF5F00" }}>Pit </span>
             <span style={{ color: "#FFFFFF" }}>Scout</span>
           </>
         }

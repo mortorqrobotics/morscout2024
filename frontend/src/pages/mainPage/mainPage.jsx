@@ -10,15 +10,15 @@ const MainPage = () => {
       <div className="btnDiv">
         <Link to="/pit-team-choice">
           {" "}
-          <DefaultBtn backgroundColor="#FF640C" text="Pit Scout" />
+          <DefaultBtn backgroundColor="#FF5F00" text="Pit Scout" />
         </Link>
         <Link to="/matchscout-team-choice">
           {" "}
-          <DefaultBtn backgroundColor="#FF7F23" text="Match Scout" />
+          <DefaultBtn backgroundColor="#FF5F00" text="Match Scout" />
         </Link>
 
         <Link to="/admin">
-          <DefaultBtn backgroundColor="#FF640C" text="Admin" />
+          <DefaultBtn backgroundColor="#FF5F00" text="Admin" />
         </Link>
       </div>
     </div>

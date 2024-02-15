@@ -12,7 +12,7 @@ const SelectFormPage = () => {
         toWhere="/matchscout-team-choice"
         headerText={
           <>
-            <span style={{ color: "#FF7F23" }}>Match </span>
+            <span style={{ color: "#FF5F00" }}>Match </span>
             <span style={{ color: "#FFFFFF" }}>Scout</span>
           </>
         }
