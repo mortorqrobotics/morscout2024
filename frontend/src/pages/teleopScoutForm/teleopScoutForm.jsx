@@ -1,5 +1,5 @@
 // src/components/TeleopScoutForm.js
-import React, { useState } from "react";
+import  { useState } from "react";
 import Header from "../../components/header/header";
 import { useParams } from "react-router-dom";
 import TextInput from "../../components/textInput/textInput";

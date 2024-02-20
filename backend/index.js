@@ -2,7 +2,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const admin = require("firebase-admin");
+const db = require("./firebase");
+const excel = require("xlsx")
 
 dotenv.config();
 const app = express();
@@ -10,13 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const serviceAccount = require("./serviceAccount.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
-const db = admin.firestore();
 
 const submitScoutForm = async (req, res, scoutType, collectionName) => {
   try {
@@ -76,6 +71,42 @@ app.post("/submit-teleopscout/:teamNumber", async (req, res) => {
 app.post("/submit-pitscout/:teamNumber", async (req, res) => {
   submitScoutForm(req, res, "pitscout", "pitscout");
 });
+
+app.get("/", async (req, res) => {
+  const collection = db.collection("pitscout");
+  const documents = await collection.listDocuments();
+  const documentsData  = await Promise.all(
+    documents.map(async (document) => {
+      const documentRef = await document.get();
+      const pitscout = documentRef.data().pitscout;
+      const output = []
+      for(let submissionKey in pitscout) {
+        const pitscoutData = pitscout[submissionKey]
+        const person = pitscoutData[Object.keys(pitscoutData)[0]]
+
+        output.push( {
+          teamNumber: document.id,
+          name: Object.keys(pitscoutData)[0],
+          ...person
+        })
+
+      }
+
+      return output
+    })
+  )
+  const data = [ ]
+  for(let personCollection of documentsData) {
+    for(let person of personCollection) {
+      data.push(person)
+    }
+  }
+  const workbook = excel.utils.book_new()
+  const worksheet = excel.utils.json_to_sheet(data);
+  excel.utils.book_append_sheet(workbook, worksheet, 'Sheet 1')
+  excel.writeFile(workbook, 'PitScouts.xlsx')
+    return res.json(data);
+})
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
