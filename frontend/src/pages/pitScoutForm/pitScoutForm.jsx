@@ -1,4 +1,3 @@
-// src/components/PitScoutForm.js
 import React, { useState, useEffect } from "react";
 import TextInput from "../../components/textInput/textInput";
 import NumberInput from "../../components/numberInput/numberInput";
@@ -12,30 +11,28 @@ const PitScoutForm = () => {
   let { teamNumber } = useParams();
 
   const [formState, setFormState] = useState({
-    weight: "",
+    robotWeight: "",
     yourName: "",
-    drivetrain: "",
-    numberOfMotors: "",
-    dropdownValue: "",
+    drivetrain: "Swerve Drive",
+    estimatedCycleTime: "",
+    pickupFromFloor: "",
+    climb: "",
+    trap: "",
+    auto: "",
+    frameSize: "",
+    scoringPosition: "",
     teamNumber: teamNumber,
   });
-
-  useEffect(() => {
-    setFormState((prevState) => ({
-      ...prevState,
-      dropdownValue: "Something 1",
-    }));
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleDropdownSelect = (selectedValue) => {
+  const handleDropdownSelect = (selectedValue, name) => {
     setFormState((prevState) => ({
       ...prevState,
-      dropdownValue: selectedValue,
+      [name]: selectedValue,
     }));
   };
 
@@ -59,14 +56,7 @@ const PitScoutForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            yourName: formState.yourName,
-            weight: formState.weight,
-            drivetrain: formState.drivetrain,
-            numberOfMotors: formState.numberOfMotors,
-            dropdownValue: formState.dropdownValue,
-            // Include other form fields here
-          }),
+          body: JSON.stringify(formState),
         }
       );
 
@@ -74,11 +64,16 @@ const PitScoutForm = () => {
         console.log("Pit form submitted successfully");
         toast.success("Pit form submitted successfully");
         setFormState({
-          weight: "",
-          drivetrain: "",
+          robotWeight: "",
           yourName: "",
-          numberOfMotors: "",
-          dropdownValue: "Something 1",
+          drivetrain: "Swerve Drive",
+          estimatedCycleTime: "",
+          pickupFromFloor: "",
+          climb: "",
+          trap: "",
+          auto: "",
+          frameSize: "",
+          scoringPosition: "",
           teamNumber: teamNumber,
         });
       } else {
@@ -111,31 +106,68 @@ const PitScoutForm = () => {
         />
 
         <NumberInput
-          label="Weight"
-          name="weight"
-          value={formState.weight}
-          onChange={handleChange}
-        />
-        <TextInput
-          label="Drivetrain"
-          name="drivetrain"
-          value={formState.drivetrain}
+          label="Robot Weight"
+          name="robotWeight"
+          value={formState.robotWeight}
           onChange={handleChange}
         />
 
         <Dropdown
-          label="Choose Something"
-          options={["Something 1", "Something 2"]}
-          onSelect={handleDropdownSelect}
-          defaultOption={formState.dropdownValue}
+          label="Drivetrain :"
+          options={["Swerve Drive", "Westcoast/Tank drive", "Omni", "Mecanum"]}
+          onSelect={(value) => handleDropdownSelect(value, "drivetrain")}
+          defaultOption={formState.drivetrain}
         />
 
         <NumberInput
-          label="Number of Motors"
-          name="numberOfMotors"
-          value={formState.numberOfMotors}
+          label="Estimated Cycle Time"
+          name="estimatedCycleTime"
+          value={formState.estimatedCycleTime}
           onChange={handleChange}
         />
+
+        <Dropdown
+          label="Pickup from the floor?"
+          options={["Yes", "No"]}
+          onSelect={(value) => handleDropdownSelect(value, "pickupFromFloor")}
+          defaultOption={formState.pickupFromFloor}
+        />
+
+        <Dropdown
+          label="Climb?"
+          options={["Yes", "No"]}
+          onSelect={(value) => handleDropdownSelect(value, "climb")}
+          defaultOption={formState.climb}
+        />
+
+        <Dropdown
+          label="Trap?"
+          options={["Yes", "No"]}
+          onSelect={(value) => handleDropdownSelect(value, "trap")}
+          defaultOption={formState.trap}
+        />
+
+        <Dropdown
+          label="Auto?"
+          options={["Yes", "No"]}
+          onSelect={(value) => handleDropdownSelect(value, "auto")}
+          defaultOption={formState.auto}
+        />
+
+        <TextInput
+          label="Frame Size"
+          name="frameSize"
+          value={formState.frameSize}
+          onChange={handleChange}
+        />
+
+        <TextInput
+          label="Scoring Position"
+          name="scoringPosition"
+          value={formState.scoringPosition}
+          onChange={handleChange}
+        />
+
         <SubmitButton label="Submit" />
       </form>
     </div>
