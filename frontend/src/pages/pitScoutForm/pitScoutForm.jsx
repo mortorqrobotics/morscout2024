@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TextInput from "../../components/textInput/textInput";
 import NumberInput from "../../components/numberInput/numberInput";
 import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
 import Dropdown from "../../components/dropdown/dropdown";
 import { toast } from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const PitScoutForm = () => {
   let { teamNumber } = useParams();
@@ -15,14 +15,16 @@ const PitScoutForm = () => {
     yourName: "",
     drivetrain: "Swerve Drive",
     estimatedCycleTime: "",
-    pickupFromFloor: "",
-    climb: "",
-    trap: "",
-    auto: "",
+    pickupFromFloor: "Yes",
+    climb: "Yes",
+    trap: "Yes",
+    auto: "Yes",
     frameSize: "",
     scoringPosition: "",
     teamNumber: teamNumber,
   });
+
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,15 +65,16 @@ const PitScoutForm = () => {
       if (response.ok) {
         console.log("Pit form submitted successfully");
         toast.success("Pit form submitted successfully");
+        setFormSubmitted(true);
         setFormState({
           robotWeight: "",
           yourName: "",
           drivetrain: "Swerve Drive",
           estimatedCycleTime: "",
-          pickupFromFloor: "",
-          climb: "",
-          trap: "",
-          auto: "",
+          pickupFromFloor: "Yes",
+          climb: "Yes",
+          trap: "Yes",
+          auto: "Yes",
           frameSize: "",
           scoringPosition: "",
           teamNumber: teamNumber,
@@ -79,10 +82,12 @@ const PitScoutForm = () => {
       } else {
         console.error("Pit form submission failed");
         toast.error("Pit form submission failed");
+        setFormSubmitted(false);
       }
     } catch (error) {
       console.error(error);
       toast.error("Internal Server Error");
+      setFormSubmitted(false);
     }
   };
 
@@ -99,14 +104,14 @@ const PitScoutForm = () => {
       />
       <form onSubmit={handleSubmit} className="pitForm">
         <TextInput
-          label="Your Name"
+          label="Your Name "
           name="yourName"
           value={formState.yourName}
           onChange={handleChange}
         />
 
         <NumberInput
-          label="Robot Weight"
+          label="Robot Weight "
           name="robotWeight"
           value={formState.robotWeight}
           onChange={handleChange}
@@ -127,28 +132,28 @@ const PitScoutForm = () => {
         />
 
         <Dropdown
-          label="Pickup from the floor?"
+          label="Pickup from the floor :"
           options={["Yes", "No"]}
           onSelect={(value) => handleDropdownSelect(value, "pickupFromFloor")}
           defaultOption={formState.pickupFromFloor}
         />
 
         <Dropdown
-          label="Climb?"
+          label="Climb :"
           options={["Yes", "No"]}
           onSelect={(value) => handleDropdownSelect(value, "climb")}
           defaultOption={formState.climb}
         />
 
         <Dropdown
-          label="Trap?"
+          label="Trap :"
           options={["Yes", "No"]}
           onSelect={(value) => handleDropdownSelect(value, "trap")}
           defaultOption={formState.trap}
         />
 
         <Dropdown
-          label="Auto?"
+          label="Auto :"
           options={["Yes", "No"]}
           onSelect={(value) => handleDropdownSelect(value, "auto")}
           defaultOption={formState.auto}
@@ -167,9 +172,17 @@ const PitScoutForm = () => {
           value={formState.scoringPosition}
           onChange={handleChange}
         />
-
-        <SubmitButton label="Submit" />
+        {formSubmitted ? (
+          <SubmitButton label="Submit" />
+        ) : (
+          <button type="submit">Submit</button>
+        )}
       </form>
+      {formSubmitted && (
+        <Link to="/">
+          <SubmitButton label="Go to Main Page" />
+        </Link>
+      )}
     </div>
   );
 };
