@@ -1,13 +1,13 @@
 // TextInput.jsx
-import React from 'react';
 import "./textInput.css"
 
 const TextInput = ({ label, name, value, onChange }) => {
   return (
-    <div className='inputField'>
+    <div className='input-field'>
       <label htmlFor={name}>{label} :</label>
       <input
-        className='textInput'
+        autoComplete="off"
+        className='text-input'
         type="text"
         id={name}
         name={name}

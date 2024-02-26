@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import PropTypes from 'prop-types'
 
 const Header = (props) => {
-  console.log(props)
   return (
     <div>
       <nav>

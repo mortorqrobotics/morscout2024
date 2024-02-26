@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-.inputField {
+.input-field {
   text-align: center;
   display: flex;
   gap: 10px;
@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-.textInput{
+.text-input{
     background-color: transparent;
     border-radius: 5px;
     border: 1px white;

@@ -1,5 +1,4 @@
 // SubmitButton.jsx
-import React from 'react';
 import "./submitBtn.css"
 
 const SubmitButton = ({ label }) => {

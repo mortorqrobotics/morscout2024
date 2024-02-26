@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "https://www.thebluealliance.com/api/v3";
+const BASE_URL = import.meta.env.VITE_TBA_API_URL || "";
 
 export const getEventTeamsNumbers = async () => {
     try {

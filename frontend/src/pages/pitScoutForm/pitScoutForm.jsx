@@ -1,28 +1,33 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TextInput from "../../components/textInput/textInput";
 import NumberInput from "../../components/numberInput/numberInput";
 import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
 import Dropdown from "../../components/dropdown/dropdown";
 import { toast } from "react-hot-toast";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { submitPitscout } from "../../api/server";
 
-const PitScoutForm = () => {
-  let { teamNumber } = useParams();
+const DRIVETRAINS = ["Swerve Drive", "Westcoast/Tank drive", "Omni", "Mecanum"]
+const CHOICEYESNO = ["Yes", "No"]
+const SCORINGPOSITIONS = ["Amp", "Speaker"]
+const DEFAULT_STATE =  {
+  robotWeight: "",
+  drivetrain: "Swerve Drive",
+  estimatedCycleTime: "",
+  pickupFromFloor: "Yes",
+  climb: "Yes",
+  trap: "Yes",
+  auto: "Yes",
+  frameSize: "",
+  scoringPosition: "Amp"
+}
+const PitScoutForm = ({username}) => {
+  const { teamNumber } = useParams();
+  const navigate = useNavigate();
 
-  const [formState, setFormState] = useState({
-    robotWeight: "",
-    yourName: "",
-    drivetrain: "Swerve Drive",
-    estimatedCycleTime: "",
-    pickupFromFloor: "Yes",
-    climb: "Yes",
-    trap: "Yes",
-    auto: "Yes",
-    frameSize: "",
-    scoringPosition: "",
-    teamNumber: teamNumber,
-  });
+
+  const [formState, setFormState] = useState({...DEFAULT_STATE, teamNumber});
 
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -40,7 +45,7 @@ const PitScoutForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setFormSubmitted(true);
     const isFormIncomplete = Object.values(formState).some(
       (value) => value === "" || value === undefined
     );
@@ -51,43 +56,20 @@ const PitScoutForm = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8000/submit-pitscout/${teamNumber}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formState),
-        }
-      );
-
+      const response = await submitPitscout(teamNumber, {...formState, yourNam username});
       if (response.ok) {
-        console.log("Pit form submitted successfully");
         toast.success("Pit form submitted successfully");
-        setFormSubmitted(true);
-        setFormState({
-          robotWeight: "",
-          yourName: "",
-          drivetrain: "Swerve Drive",
-          estimatedCycleTime: "",
-          pickupFromFloor: "Yes",
-          climb: "Yes",
-          trap: "Yes",
-          auto: "Yes",
-          frameSize: "",
-          scoringPosition: "",
-          teamNumber: teamNumber,
-        });
+        setFormState({...DEFAULT_STATE, teamNumber});
+        navigate("/");
       } else {
-        console.error("Pit form submission failed");
         toast.error("Pit form submission failed");
         setFormSubmitted(false);
       }
     } catch (error) {
-      console.error(error);
       toast.error("Internal Server Error");
       setFormSubmitted(false);
+      console.log(error)
+
     }
   };
 
@@ -102,16 +84,9 @@ const PitScoutForm = () => {
           </>
         }
       />
-      <form onSubmit={handleSubmit} className="pitForm">
-        <TextInput
-          label="Your Name "
-          name="yourName"
-          value={formState.yourName}
-          onChange={handleChange}
-        />
-
+      <form onSubmit={handleSubmit} className="pit-form">
         <NumberInput
-          label="Robot Weight "
+          label="Robot Weight (lbs)"
           name="robotWeight"
           value={formState.robotWeight}
           onChange={handleChange}
@@ -119,13 +94,13 @@ const PitScoutForm = () => {
 
         <Dropdown
           label="Drivetrain :"
-          options={["Swerve Drive", "Westcoast/Tank drive", "Omni", "Mecanum"]}
+          options={DRIVETRAINS}
           onSelect={(value) => handleDropdownSelect(value, "drivetrain")}
           defaultOption={formState.drivetrain}
         />
 
         <NumberInput
-          label="Estimated Cycle Time"
+          label="Estimated Cycle Time (s)"
           name="estimatedCycleTime"
           value={formState.estimatedCycleTime}
           onChange={handleChange}
@@ -133,28 +108,28 @@ const PitScoutForm = () => {
 
         <Dropdown
           label="Pickup from the floor :"
-          options={["Yes", "No"]}
+          options={CHOICEYESNO}
           onSelect={(value) => handleDropdownSelect(value, "pickupFromFloor")}
           defaultOption={formState.pickupFromFloor}
         />
 
         <Dropdown
           label="Climb :"
-          options={["Yes", "No"]}
+          options={CHOICEYESNO}
           onSelect={(value) => handleDropdownSelect(value, "climb")}
           defaultOption={formState.climb}
         />
 
         <Dropdown
           label="Trap :"
-          options={["Yes", "No"]}
+          options={CHOICEYESNO}
           onSelect={(value) => handleDropdownSelect(value, "trap")}
           defaultOption={formState.trap}
         />
 
         <Dropdown
           label="Auto :"
-          options={["Yes", "No"]}
+          options={CHOICEYESNO}
           onSelect={(value) => handleDropdownSelect(value, "auto")}
           defaultOption={formState.auto}
         />
@@ -166,23 +141,15 @@ const PitScoutForm = () => {
           onChange={handleChange}
         />
 
-        <TextInput
-          label="Scoring Position"
-          name="scoringPosition"
-          value={formState.scoringPosition}
-          onChange={handleChange}
+          <Dropdown
+          label="Scoring Position :"
+          options={SCORINGPOSITIONS}
+          onSelect={(value) => handleDropdownSelect(value, "scoringPosition")}
+          defaultOption={formState.scoringPosition}
         />
-        {formSubmitted ? (
-          <SubmitButton label="Submit" />
-        ) : (
-          <button type="submit">Submit</button>
-        )}
+
+        <SubmitButton label={formSubmitted ? "Submitting..." : "Submit"} />
       </form>
-      {formSubmitted && (
-        <Link to="/">
-          <SubmitButton label="Go to Main Page" />
-        </Link>
-      )}
     </div>
   );
 };

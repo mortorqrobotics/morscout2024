@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./matchscoutPage.css";
 import Header from "../../components/header/header";
 import MatchButton from "../../components/matchButton/matchButton";
-import { getEventMatches } from "../../../api/tba";
+import { getEventMatches } from "../../api/tba";
 
 const MatchscoutPage = () => {
   const [matches, setMatches] = useState([]);
