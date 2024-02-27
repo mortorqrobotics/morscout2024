@@ -1,71 +1,68 @@
-// src/components/TeleopScoutForm.js
 import React, { useState } from "react";
 import Header from "../../components/header/header";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import TextInput from "../../components/textInput/textInput";
 import { toast } from "react-hot-toast";
 import SubmitButton from "../../components/submitBtn/submitBtn";
+import Dropdown from "../../components/dropdown/dropdown";
+import Counter from "../../components/counter/counter";
+import Timer from "../../components/timer/timer"; // Import the Timer component
+import { submitTeleop } from "../../api/server";
 
-const TeleopScoutForm = () => {
-  let { teamNumber } = useParams();
-  const [formData, setFormData] = useState({
-    teamName: "",
-    allianceColor: "",
-    matchNumber: "",
-    yourName: "",
-    // Add more form fields as needed
-  });
+const CHOICEYESNO = ["Yes", "No"];
+const DEFAULT_STATE = {
+  speakerCounter: 0,
+  ampCounter: 0,
+  yourName: "",
+  trap: "Yes",
+  guyThrewTheRing: "",
+  generalComments: "",
+  robotSpeed: "Slow",
+  didTheyDoDefense: "No",
+  climbTime: 0, // Added climbTime to the default state
+};
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+const TeleopScoutForm = ({ username }) => {
+  const { teamNumber } = useParams();
+  const navigate = useNavigate();
+  const [formState, setFormState] = useState({ ...DEFAULT_STATE });
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isClimbCounterRunning, setIsClimbCounterRunning] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormSubmitted(true);
 
-    const isFormIncomplete = Object.values(formData).some(
-      (value) => value === "" || value === undefined
-    );
+    // Check form completeness, excluding climbTime
+    const isFormIncomplete = Object.keys(formState)
+      .filter((key) => key !== "climbTime")
+      .some((key) => formState[key] === "" || formState[key] === undefined);
 
     if (isFormIncomplete) {
       toast.error("Form is not filled out completely");
-      console.log("Form is not filled out completely");
       return;
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8000/submit-teleopscout/${teamNumber}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      // Submit form data
+      const response = await submitTeleop(teamNumber, {
+        ...formState,
+        username,
+      });
 
       if (response.ok) {
-        console.log("TeleopScout form submitted successfully");
         toast.success("TeleopScout form submitted successfully");
-        setFormData({
-          teamName: "",
-          allianceColor: "",
-          matchNumber: "",
-          yourName: "",
-          // Reset other form fields as needed
-        });
+        setFormState({ ...DEFAULT_STATE });
+        setIsClimbCounterRunning(false); // Stop the timer after form submission
+        navigate("/");
       } else {
-        console.error("TeleopScout form submission failed");
         toast.error("TeleopScout form submission failed");
+        setFormSubmitted(false);
       }
     } catch (error) {
       console.error(error);
       toast.error("Internal Server Error");
+      setFormSubmitted(false);
     }
   };
 
@@ -83,31 +80,90 @@ const TeleopScoutForm = () => {
         <TextInput
           label="Your Name"
           name="yourName"
-          value={formData.yourName}
-          onChange={handleChange}
+          value={formState.yourName}
+          onChange={(e) =>
+            setFormState({ ...formState, yourName: e.target.value })
+          }
+        />
+
+        <Counter
+          label="Speaker Counter"
+          name="speakerCounter"
+          value={formState.speakerCounter}
+          onChange={(name, value) =>
+            setFormState({ ...formState, [name]: value })
+          }
+        />
+
+        <Counter
+          label="Amp Counter"
+          name="ampCounter"
+          value={formState.ampCounter}
+          onChange={(name, value) =>
+            setFormState({ ...formState, [name]: value })
+          }
+        />
+
+        <Dropdown
+          label="Trap?"
+          options={CHOICEYESNO}
+          onSelect={(value) => setFormState({ ...formState, trap: value })}
+          defaultOption={formState.trap}
         />
 
         <TextInput
-          label="Team Name"
-          name="teamName"
-          value={formData.teamName}
-          onChange={handleChange}
+          label="Guy Threw the Ring"
+          name="guyThrewTheRing"
+          value={formState.guyThrewTheRing}
+          onChange={(e) =>
+            setFormState({ ...formState, guyThrewTheRing: e.target.value })
+          }
         />
 
         <TextInput
-          label="Alliance Color"
-          name="allianceColor"
-          value={formData.allianceColor}
-          onChange={handleChange}
+          label="General Comments"
+          name="generalComments"
+          value={formState.generalComments}
+          onChange={(e) =>
+            setFormState({ ...formState, generalComments: e.target.value })
+          }
         />
 
-        <TextInput
-          label="Match Number"
-          name="matchNumber"
-          value={formData.matchNumber}
-          onChange={handleChange}
+        <Dropdown
+          label="Robot Speed"
+          options={["Slow", "Medium", "Fast"]}
+          onSelect={(value) =>
+            setFormState({ ...formState, robotSpeed: value })
+          }
+          defaultOption={formState.robotSpeed}
         />
-        <SubmitButton label="Submit" />
+
+        <Dropdown
+          label="Did they do defense?"
+          options={CHOICEYESNO}
+          onSelect={(value) =>
+            setFormState({ ...formState, didTheyDoDefense: value })
+          }
+          defaultOption={formState.didTheyDoDefense}
+        />
+
+        {/* Timer */}
+        <div>
+          <label>Climb Timer</label>
+        <Timer
+          initialTime={0}
+          isRunning={isClimbCounterRunning}
+          onStart={() => console.log("Timer started")} // Add onStart prop
+          onStop={(time) => {
+            // Handle the stop action here
+            console.log("Timer stopped at:", time, "seconds");
+          }}
+        />
+        {/* Always display a stop button */}
+        <button onClick={() => setIsClimbCounterRunning(false)}>Stop</button>
+        </div>
+
+        <SubmitButton label={formSubmitted ? "Submitting..." : "Submit"} />
       </form>
     </div>
   );

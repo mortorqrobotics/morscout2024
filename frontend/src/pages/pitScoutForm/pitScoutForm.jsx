@@ -8,10 +8,10 @@ import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
 import { submitPitscout } from "../../api/server";
 
-const DRIVETRAINS = ["Swerve Drive", "Westcoast/Tank drive", "Omni", "Mecanum"]
-const CHOICEYESNO = ["Yes", "No"]
-const SCORINGPOSITIONS = ["Amp", "Speaker"]
-const DEFAULT_STATE =  {
+const DRIVETRAINS = ["Swerve Drive", "Westcoast/Tank drive", "Omni", "Mecanum"];
+const CHOICEYESNO = ["Yes", "No"];
+const SCORINGPOSITIONS = ["Amp", "Speaker"];
+const DEFAULT_STATE = {
   robotWeight: "",
   drivetrain: "Swerve Drive",
   estimatedCycleTime: "",
@@ -21,14 +21,13 @@ const DEFAULT_STATE =  {
   auto: "Yes",
   frameSize: "",
   scoringPosition: "Amp"
-}
-const PitScoutForm = ({username}) => {
+};
+
+const PitScoutForm = ({ username }) => {
   const { teamNumber } = useParams();
   const navigate = useNavigate();
 
-
-  const [formState, setFormState] = useState({...DEFAULT_STATE, teamNumber});
-
+  const [formState, setFormState] = useState({ ...DEFAULT_STATE, teamNumber });
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -46,6 +45,7 @@ const PitScoutForm = ({username}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitted(true);
+
     const isFormIncomplete = Object.values(formState).some(
       (value) => value === "" || value === undefined
     );
@@ -56,10 +56,10 @@ const PitScoutForm = ({username}) => {
     }
 
     try {
-      const response = await submitPitscout(teamNumber, {...formState, yourNam username});
+      const response = await submitPitscout(teamNumber, { ...formState, username });
       if (response.ok) {
         toast.success("Pit form submitted successfully");
-        setFormState({...DEFAULT_STATE, teamNumber});
+        setFormState({ ...DEFAULT_STATE, teamNumber });
         navigate("/");
       } else {
         toast.error("Pit form submission failed");
@@ -68,8 +68,7 @@ const PitScoutForm = ({username}) => {
     } catch (error) {
       toast.error("Internal Server Error");
       setFormSubmitted(false);
-      console.log(error)
-
+      console.error(error);
     }
   };
 
@@ -141,7 +140,7 @@ const PitScoutForm = ({username}) => {
           onChange={handleChange}
         />
 
-          <Dropdown
+        <Dropdown
           label="Scoring Position :"
           options={SCORINGPOSITIONS}
           onSelect={(value) => handleDropdownSelect(value, "scoringPosition")}
