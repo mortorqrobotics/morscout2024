@@ -1,42 +1,40 @@
-import React, { useState } from "react";
-import Header from "../../components/header/header";
-import { useParams, useNavigate } from "react-router-dom";
-import TextInput from "../../components/textInput/textInput";
-import { toast } from "react-hot-toast";
-import SubmitButton from "../../components/submitBtn/submitBtn";
-import Dropdown from "../../components/dropdown/dropdown";
-import Counter from "../../components/counter/counter";
-import Timer from "../../components/timer/timer"; // Import the Timer component
-import { submitTeleop } from "../../api/server";
 
+import { useState } from "react";
+import SubmitButton from "../../components/submitBtn/submitBtn";
+import Header from "../../components/header/header";
+import { toast } from "react-hot-toast";
+import { useParams, useNavigate } from "react-router-dom";
+import { submitTeleop } from "../../api/server";
+import Counter from "../../components/counter/counter";
+import Dropdown from "../../components/dropdown/dropdown";
+import TextInput from "../../components/textInput/textInput";
+import NumberInput from "../../components/numberInput/numberInput";
 const CHOICEYESNO = ["Yes", "No"];
 const DEFAULT_STATE = {
   speakerCounter: 0,
   ampCounter: 0,
-  yourName: "",
   trap: "Yes",
   guyThrewTheRing: "",
   generalComments: "",
   robotSpeed: "Slow",
   didTheyDoDefense: "No",
-  climbTime: 0, // Added climbTime to the default state
+  climbTime: 0,
 };
 
 const TeleopScoutForm = ({ username }) => {
   const { teamNumber } = useParams();
   const navigate = useNavigate();
+
   const [formState, setFormState] = useState({ ...DEFAULT_STATE });
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [isClimbCounterRunning, setIsClimbCounterRunning] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitted(true);
 
-    // Check form completeness, excluding climbTime
-    const isFormIncomplete = Object.keys(formState)
-      .filter((key) => key !== "climbTime")
-      .some((key) => formState[key] === "" || formState[key] === undefined);
+    const isFormIncomplete = Object.values(formState).some(
+      (value) => value === "" || value === undefined
+    );
 
     if (isFormIncomplete) {
       toast.error("Form is not filled out completely");
@@ -44,25 +42,19 @@ const TeleopScoutForm = ({ username }) => {
     }
 
     try {
-      // Submit form data
-      const response = await submitTeleop(teamNumber, {
-        ...formState,
-        username,
-      });
-
+      const response = await submitTeleop(teamNumber, { ...formState, username });
       if (response.ok) {
         toast.success("TeleopScout form submitted successfully");
         setFormState({ ...DEFAULT_STATE });
-        setIsClimbCounterRunning(false); // Stop the timer after form submission
         navigate("/");
       } else {
         toast.error("TeleopScout form submission failed");
         setFormSubmitted(false);
       }
     } catch (error) {
-      console.error(error);
       toast.error("Internal Server Error");
       setFormSubmitted(false);
+      console.error(error);
     }
   };
 
@@ -77,16 +69,7 @@ const TeleopScoutForm = ({ username }) => {
         }
       />
       <form onSubmit={handleSubmit} className="pitForm">
-        <TextInput
-          label="Your Name"
-          name="yourName"
-          value={formState.yourName}
-          onChange={(e) =>
-            setFormState({ ...formState, yourName: e.target.value })
-          }
-        />
-
-        <Counter
+      <Counter
           label="Speaker Counter"
           name="speakerCounter"
           value={formState.speakerCounter}
@@ -146,23 +129,6 @@ const TeleopScoutForm = ({ username }) => {
           }
           defaultOption={formState.didTheyDoDefense}
         />
-
-        {/* Timer */}
-        <div>
-          <label>Climb Timer</label>
-        <Timer
-          initialTime={0}
-          isRunning={isClimbCounterRunning}
-          onStart={() => console.log("Timer started")} // Add onStart prop
-          onStop={(time) => {
-            // Handle the stop action here
-            console.log("Timer stopped at:", time, "seconds");
-          }}
-        />
-        {/* Always display a stop button */}
-        <button onClick={() => setIsClimbCounterRunning(false)}>Stop</button>
-        </div>
-
         <SubmitButton label={formSubmitted ? "Submitting..." : "Submit"} />
       </form>
     </div>
