@@ -13,14 +13,16 @@ const LoginPage = ({ changeUsername }) => {
     navigate("/");
   };
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="login">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <label htmlFor="userName" className="login-label">Your Name : </label>
         <input
           onChange={(e) => setUserName(e.target.value)}
           value={userName}
           type="text"
+          className="login-input"
         />
-        <button type="submit">Login</button>
+        <button type="submit" className="login-button">Login</button>
       </form>
     </div>
   );

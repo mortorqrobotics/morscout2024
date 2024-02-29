@@ -41,15 +41,18 @@ function App() {
       />
       <Route
         path="/matchscout-team-form/:teamNumber/auto"
-        element={<AutoScoutForm />}
+        element={<AutoScoutForm username={username} />}
       />
       <Route
         path="/matchscout-team-form/:teamNumber/teleop"
-        element={<TeleopScoutForm />}
+        element={<TeleopScoutForm username={username} />}
       />
 
       <Route path="/pit-team-choice" element={<Pitscoutpage />} />
-      <Route path="/pit-team-form/:teamNumber" element={<PitScoutForm username={username} />} />
+      <Route
+        path="/pit-team-form/:teamNumber"
+        element={<PitScoutForm username={username} />}
+      />
     </Routes>
   );
 }

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
@@ -9,16 +8,18 @@ import Counter from "../../components/counter/counter";
 import Dropdown from "../../components/dropdown/dropdown";
 import TextInput from "../../components/textInput/textInput";
 import NumberInput from "../../components/numberInput/numberInput";
+import "./ts.css"
 const CHOICEYESNO = ["Yes", "No"];
 const DEFAULT_STATE = {
   speakerCounter: 0,
   ampCounter: 0,
   trap: "Yes",
-  guyThrewTheRing: "",
+  guyThrewTheRing: "Yes",
   generalComments: "",
   robotSpeed: "Slow",
   didTheyDoDefense: "No",
-  climbTime: 0,
+  climbRating: "No Climb",
+  climbComments: ""
 };
 
 const TeleopScoutForm = ({ username }) => {
@@ -42,7 +43,10 @@ const TeleopScoutForm = ({ username }) => {
     }
 
     try {
-      const response = await submitTeleop(teamNumber, { ...formState, username });
+      const response = await submitTeleop(teamNumber, {
+        ...formState,
+        username,
+      });
       if (response.ok) {
         toast.success("TeleopScout form submitted successfully");
         setFormState({ ...DEFAULT_STATE });
@@ -68,8 +72,8 @@ const TeleopScoutForm = ({ username }) => {
           </>
         }
       />
-      <form onSubmit={handleSubmit} className="pitForm">
-      <Counter
+      <form onSubmit={handleSubmit} className="teleopScout">
+        <Counter
           label="Speaker Counter"
           name="speakerCounter"
           value={formState.speakerCounter}
@@ -93,23 +97,13 @@ const TeleopScoutForm = ({ username }) => {
           onSelect={(value) => setFormState({ ...formState, trap: value })}
           defaultOption={formState.trap}
         />
-
-        <TextInput
-          label="Guy Threw the Ring"
-          name="guyThrewTheRing"
-          value={formState.guyThrewTheRing}
-          onChange={(e) =>
-            setFormState({ ...formState, guyThrewTheRing: e.target.value })
+        <Dropdown
+          label="Human Player Atempted To Shoot :"
+          options={CHOICEYESNO}
+          onSelect={(value) =>
+            setFormState({ ...formState, guyThrewTheRing: value })
           }
-        />
-
-        <TextInput
-          label="General Comments"
-          name="generalComments"
-          value={formState.generalComments}
-          onChange={(e) =>
-            setFormState({ ...formState, generalComments: e.target.value })
-          }
+          defaultOption={formState.guyThrewTheRing}
         />
 
         <Dropdown
@@ -120,6 +114,22 @@ const TeleopScoutForm = ({ username }) => {
           }
           defaultOption={formState.robotSpeed}
         />
+        <Dropdown
+          label="Climb Rating"
+          options={["No Climb", "1", "2", "3", "4", "5"]}
+          onSelect={(value) =>
+            setFormState({ ...formState, climbRating: value })
+          }
+          defaultOption={formState.climbRating}
+        />
+        <TextInput
+          label="Climb Comments"
+          name="climbComments"
+          value={formState.climbComments}
+          onChange={(e) =>
+            setFormState({ ...formState, climbComments: e.target.value })
+          }
+        />
 
         <Dropdown
           label="Did they do defense?"
@@ -128,6 +138,14 @@ const TeleopScoutForm = ({ username }) => {
             setFormState({ ...formState, didTheyDoDefense: value })
           }
           defaultOption={formState.didTheyDoDefense}
+        />
+        <TextInput
+          label="General Comments"
+          name="generalComments"
+          value={formState.generalComments}
+          onChange={(e) =>
+            setFormState({ ...formState, generalComments: e.target.value })
+          }
         />
         <SubmitButton label={formSubmitted ? "Submitting..." : "Submit"} />
       </form>
