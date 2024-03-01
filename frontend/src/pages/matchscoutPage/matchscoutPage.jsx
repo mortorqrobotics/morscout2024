@@ -43,7 +43,7 @@ const MatchscoutPage = () => {
         }
       />
       <div className="match-buttons">
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar searchText="Enter Match Number..." onSearch={handleSearch} />
         {loading ? (
           <h1>Loading...</h1>
         ) : error ? (
