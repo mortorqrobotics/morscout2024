@@ -3,12 +3,10 @@ import SubmitButton from "../../components/submitBtn/submitBtn";
 import Header from "../../components/header/header";
 import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
-import { submitTeleop } from "../../api/server";
+import { submitAutoScout } from "../../api/server"; // Assuming you have a function for auto scouting
 import Counter from "../../components/counter/counter";
 import Dropdown from "../../components/dropdown/dropdown";
-import TextInput from "../../components/textInput/textInput";
-import NumberInput from "../../components/numberInput/numberInput";
-import "../teleopScoutForm/teleopScoutForm"
+
 const CHOICEYESNO = ["Yes", "No"];
 const DEFAULT_STATE = {
   speakerCounter: 0,
@@ -37,14 +35,14 @@ const AutoScoutForm = ({ username }) => {
     }
 
     try {
-      const response = await submitTeleop(teamNumber, {
+      const response = await submitAutoScout(teamNumber, {
         ...formState,
         username,
       });
       if (response.ok) {
         toast.success("Auto Scout form submitted successfully");
         setFormState({ ...DEFAULT_STATE });
-        navigate("/");
+        navigate("/matchscout-team-form/:teamNumber/teleop");
       } else {
         toast.error("Auto Scout form submission failed");
         setFormSubmitted(false);
@@ -62,11 +60,11 @@ const AutoScoutForm = ({ username }) => {
         toWhere={`/matchscout-team-form/${teamNumber}`}
         headerText={
           <>
-            <span style={{ color: "#FFFFFF" }}>Teleop</span>
+            <span style={{ color: "#FFFFFF" }}>Auto Scout</span>
           </>
         }
       />
-      <form onSubmit={handleSubmit} className="teleopScout">
+      <form onSubmit={handleSubmit} className="autoScout">
         <Counter
           label="Speaker Counter"
           name="speakerCounter"

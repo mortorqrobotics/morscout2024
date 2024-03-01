@@ -33,7 +33,6 @@ export const getEventMatches = async () => {
               },
             }
           );
-          console.log(data)
           return data.map((match) => ({
             red_team: match.alliances.red.team_keys,
             blue_team: match.alliances.blue.team_keys,

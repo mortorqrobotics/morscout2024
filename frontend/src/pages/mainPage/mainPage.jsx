@@ -14,9 +14,6 @@ const MainPage = () => {
           <DefaultBtn backgroundColor="#FF5F00" text="Match Scout" />
         </Link>
 
-        <Link to="/admin">
-          <DefaultBtn backgroundColor="#FF5F00" text="Admin" />
-        </Link>
       </div>
     </div>
   );

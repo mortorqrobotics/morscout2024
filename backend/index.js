@@ -21,7 +21,7 @@ const db = admin.firestore();
 const submitScoutForm = async (req, res, scoutType, collectionName) => {
   try {
     const { teamNumber } = req.params;
-    const { yourName, ...formFields } = req.body;
+    const { username, ...formFields } = req.body;
 
     // Check if the teamNumber document exists in the specified collection
     const teamDocRef = db.collection(collectionName).doc(teamNumber);
@@ -33,7 +33,7 @@ const submitScoutForm = async (req, res, scoutType, collectionName) => {
       // Create a new submission with the person's name
       const newSubmissionKey = `submission${Object.keys(scoutData).length + 1}`;
       const newSubmission = {
-        [yourName]: formFields,
+        [username]: formFields,
       };
 
       // Append the new submission to the existing scout data
@@ -44,7 +44,7 @@ const submitScoutForm = async (req, res, scoutType, collectionName) => {
       // If the document doesn't exist, create a new one
       const initialData = {
         [`submission1`]: {
-          [yourName]: formFields,
+          [username]: formFields,
         },
       };
 

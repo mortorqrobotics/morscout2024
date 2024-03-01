@@ -1,5 +1,4 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
-console.log(BACKEND_URL);
 
 export const submitPitscout = async (teamNumber, data) => {
     return await fetch(
@@ -16,7 +15,20 @@ export const submitPitscout = async (teamNumber, data) => {
 
 export const submitTeleop = async (teamNumber, data) => {
     return await fetch(
-        `${BACKEND_URL}/submit-teleop/${teamNumber}`,
+        `${BACKEND_URL}/submit-teleopscout/${teamNumber}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        }
+    );
+};
+
+export const submitAutoScout = async (teamNumber, data) => {
+    return await fetch(
+        `${BACKEND_URL}/submit-autoscout/${teamNumber}`,
         {
             method: "POST",
             headers: {
