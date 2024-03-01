@@ -42,7 +42,7 @@ const AutoScoutForm = ({ username }) => {
       if (response.ok) {
         toast.success("Auto Scout form submitted successfully");
         setFormState({ ...DEFAULT_STATE });
-        navigate("/matchscout-team-form/:teamNumber/teleop");
+        navigate(`/matchscout-team-form/${teamNumber}/teleop`);
       } else {
         toast.error("Auto Scout form submission failed");
         setFormSubmitted(false);
