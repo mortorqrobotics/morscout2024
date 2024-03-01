@@ -38,14 +38,3 @@ export const submitAutoScout = async (teamNumber, data) => {
         }
     );
 };
-
-export const getScoutData = async (scoutType) => {
-  try {
-    const response = await fetch(`${BACKEND_URL}/get-${scoutType}-data`);
-    return response;
-  } catch (error) {
-    console.error("Error fetching scout data:", error);
-    throw error;
-  }
-};
-
