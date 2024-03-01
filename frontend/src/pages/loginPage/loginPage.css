@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 20px;
     width: 300px;
+    justify-content: center;
 }
 .login-input{
     background-color: transparent;

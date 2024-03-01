@@ -7,6 +7,7 @@ import Dropdown from "../../components/dropdown/dropdown";
 import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
 import { submitPitscout } from "../../api/server";
+import "./pitScoutForm.css"
 
 const DRIVETRAINS = ["Swerve Drive", "Westcoast/Tank drive", "Omni", "Mecanum"]
 const CHOICEYESNO = ["Yes", "No"]
