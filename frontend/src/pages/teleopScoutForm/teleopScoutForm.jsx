@@ -1,5 +1,4 @@
-import { useState } from "react";
-import SubmitButton from "../../components/submitBtn/submitBtn";
+import React, { useState } from "react";
 import Header from "../../components/header/header";
 import { toast } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
@@ -7,7 +6,7 @@ import { submitTeleop } from "../../api/server";
 import Counter from "../../components/counter/counter";
 import Dropdown from "../../components/dropdown/dropdown";
 import TextInput from "../../components/textInput/textInput";
-import NumberInput from "../../components/numberInput/numberInput";
+import SubmitButton from "../../components/submitBtn/submitBtn";
 import "./ts.css"
 const CHOICEYESNO = ["Yes", "No"];
 const DEFAULT_STATE = {
