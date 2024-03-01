@@ -3,7 +3,7 @@ import "./submitBtn.css"
 
 const SubmitButton = ({ label }) => {
   return (
-    <div>
+    <div className="submit-btn">
       <button className='submitBtn' type="submit">{label}</button>
     </div>
   );
