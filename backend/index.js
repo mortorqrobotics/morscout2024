@@ -1,9 +1,8 @@
-// server.js
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const db = require("./firebase");
-const excel = require("xlsx")
+const excel = require("xlsx");
 
 dotenv.config();
 const app = express();
@@ -11,8 +10,85 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Define function to get scout data
+const getScoutData = async (scoutType) => {
+  try {
+    const collection = db.collection(scoutType);
+    const documents = await collection.listDocuments();
+    const documentsData = await Promise.all(
+      documents.map(async (document) => {
+        const documentRef = await document.get();
+        return documentRef.data();
+      })
+    );
+    return documentsData;
+  } catch (error) {
+    console.error("Error fetching scout data:", error);
+    throw error;
+  }
+};
+
+// Endpoint for getting match scout data
+app.get("/get-matchscout-data", async (req, res) => {
+  try {
+    const matchScoutData = await getScoutData("matchscout");
+    res.status(200).json({ success: true, data: matchScoutData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+// Endpoint for getting pit scout data
+app.get("/get-pitscout-data", async (req, res) => {
+  try {
+    const pitScoutData = await getScoutData("pitscout");
+    res.status(200).json({ success: true, data: pitScoutData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+app.get("/download-pitscout-data", async (req, res) => {
+  try {
+    const pitScoutData = await getScoutData("pitscout");
+
+    // Transform the data into an array of objects if necessary
+    const transformedData = pitScoutData.map((document) => ({
+      teamNumber: document.id,
+      ...document.data().pitscout,
+    }));
+
+    // Create Excel workbook and worksheet
+    const workbook = excel.utils.book_new();
+    const worksheet = excel.utils.json_to_sheet(transformedData);
+    excel.utils.book_append_sheet(workbook, worksheet, "PitScouts");
+
+    // Write the workbook to a buffer
+    const buffer = excel.write(workbook, { type: "buffer" });
+
+    // Set the appropriate headers for downloading the file
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=PitScouts.xlsx"
+    );
+
+    // Send the buffer as the response
+    res.send(buffer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
 
 
+
+// Define function to submit scout form
 const submitScoutForm = async (req, res, scoutType, collectionName) => {
   try {
     const { teamNumber } = req.params;
@@ -72,42 +148,7 @@ app.post("/submit-pitscout/:teamNumber", async (req, res) => {
   submitScoutForm(req, res, "pitscout", "pitscout");
 });
 
-app.get("/", async (req, res) => {
-  const collection = db.collection("pitscout");
-  const documents = await collection.listDocuments();
-  const documentsData  = await Promise.all(
-    documents.map(async (document) => {
-      const documentRef = await document.get();
-      const pitscout = documentRef.data().pitscout;
-      const output = []
-      for(let submissionKey in pitscout) {
-        const pitscoutData = pitscout[submissionKey]
-        const person = pitscoutData[Object.keys(pitscoutData)[0]]
-
-        output.push( {
-          teamNumber: document.id,
-          name: Object.keys(pitscoutData)[0],
-          ...person
-        })
-
-      }
-
-      return output
-    })
-  )
-  const data = [ ]
-  for(let personCollection of documentsData) {
-    for(let person of personCollection) {
-      data.push(person)
-    }
-  }
-  const workbook = excel.utils.book_new()
-  const worksheet = excel.utils.json_to_sheet(data);
-  excel.utils.book_append_sheet(workbook, worksheet, 'Sheet 1')
-  excel.writeFile(workbook, 'PitScouts.xlsx')
-    return res.json(data);
-})
-
+// Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
