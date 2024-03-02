@@ -1,5 +1,4 @@
 // AdminPage.js
-import React from "react";
 import Header from "../../components/header/header";
 import { getScoutData } from "../../api/server"; // Adjust import path
 import { utils, writeFile } from "xlsx"; // Import specific functions from xlsx
