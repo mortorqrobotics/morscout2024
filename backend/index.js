@@ -77,39 +77,49 @@ app.post("/submit-pitscout/:teamNumber", async (req, res) => {
   submitScoutForm(req, res, "pitscout", "pitscout");
 });
 
-// Function to convert data to Excel and download
+// Function to convert data to Excel and downloada
 const downloadExcel = (data, filename) => {
-  const ws = excel.utils.json_to_sheet(data);
+  // Rearrange the data to have username as the first field and submissionKey at the end
+  const rearrangedData = data.map(entry => {
+    const { username, ...rest } = entry;
+    const { submissionKey, ...fieldsExceptSubmissionKey } = rest;
+    return { username, ...fieldsExceptSubmissionKey, submissionKey };
+  });
+
+  // Sort the rearranged data by team number and username
+  rearrangedData.sort((a, b) => {
+    if (a.teamNumber !== b.teamNumber) return a.teamNumber.localeCompare(b.teamNumber);
+    return a.username.localeCompare(b.username);
+  });
+
+  const ws = excel.utils.json_to_sheet(rearrangedData);
   const wb = excel.utils.book_new();
   excel.utils.book_append_sheet(wb, ws, "Sheet 1");
   excel.writeFile(wb, filename);
 };
 
-// Endpoint to fetch pit scout data and download as Excel
 app.get("/pitscout", async (req, res) => {
   try {
     const pitScoutCollection = admin.firestore().collection("pitscout");
 
     const pitScoutDocuments = await pitScoutCollection.listDocuments();
-    const pitScoutData = await Promise.all(
-      pitScoutDocuments.map(async (document) => {
-        const documentRef = await document.get();
-        const pitscout = documentRef.data().pitscout;
-        const output = [];
+    const pitScoutData = [];
 
-        for (let submissionKey in pitscout) {
-          const pitscoutData = pitscout[submissionKey];
-          const person = pitscoutData[Object.keys(pitscoutData)[0]];
+    for (const document of pitScoutDocuments) {
+      const documentRef = await document.get();
+      const pitscout = documentRef.data().pitscout;
 
-          output.push({
-            teamNumber: document.id,
-            name: Object.keys(pitscoutData)[0],
-            ...person,
-          });
-        }
-        return output;
-      })
-    );
+      for (const submissionKey in pitscout) {
+        const submissionData = pitscout[submissionKey];
+        const username = Object.keys(submissionData)[0]; // Get the username directly from the keys of submissionData
+        pitScoutData.push({
+          teamNumber: document.id,
+          submissionKey: submissionKey,
+          ...submissionData[username], // Use the username to directly access the submission data
+          username: username // Include the username in the output
+        });
+      }
+    }
 
     // Log the fetched data to inspect
     console.log("Pit Scout Data:", pitScoutData);
@@ -125,37 +135,59 @@ app.get("/pitscout", async (req, res) => {
   }
 });
 
+
 // Endpoint to fetch match scout data and download as Excel
 app.get("/matchscout", async (req, res) => {
   try {
     const matchScoutCollection = admin.firestore().collection("matchscout");
 
     const matchScoutDocuments = await matchScoutCollection.listDocuments();
-    const matchScoutData = await Promise.all(
-      matchScoutDocuments.map(async (document) => {
-        const documentRef = await document.get();
-        const matchscout = documentRef.data();
+    let matchScoutData = [];
 
-        const autoscout = matchscout.autoscout || {};
-        const teleopscout = matchscout.teleopscout || {};
-        
-        const autoscoutData = Object.entries(autoscout).map(([key, value]) => ({
-          teamNumber: document.id,
-          name: key,
-          scoutType: 'autoscout',
-          ...value,
-        }));
+    for (const document of matchScoutDocuments) {
+      const documentRef = await document.get();
+      const matchscout = documentRef.data();
 
-        const teleopscoutData = Object.entries(teleopscout).map(([key, value]) => ({
-          teamNumber: document.id,
-          name: key,
-          scoutType: 'teleopscout',
-          ...value,
-        }));
+      const autoscout = matchscout.autoscout || {};
+      const teleopscout = matchscout.teleopscout || {};
 
-        return [...autoscoutData, ...teleopscoutData];
-      })
-    );
+      // Helper function to add entries to matchScoutData with proper structure
+      const addEntries = (scoutType, scoutData) => {
+        for (const submissionKey in scoutData) {
+          const submissionData = scoutData[submissionKey];
+          const username = Object.keys(submissionData)[0]; // Get the username directly from the keys of submissionData
+          matchScoutData.push({
+            teamNumber: document.id,
+            ...submissionData[username], // Use the username to directly access the submission data
+            username: username, // Include the username in the output
+            scoutType: scoutType, // Include the scout type
+            submissionKey: submissionKey // Include the submission key
+          });
+        }
+      };
+
+      // Add entries for autoscout
+      addEntries('autoscout', autoscout);
+
+      // Add entries for teleopscout
+      addEntries('teleopscout', teleopscout);
+    }
+
+    // Sort the matchScoutData by team number, username, and then scout type
+    matchScoutData.sort((a, b) => {
+      if (a.teamNumber !== b.teamNumber) return a.teamNumber.localeCompare(b.teamNumber);
+      if (a.username !== b.username) return a.username.localeCompare(b.username);
+      return a.scoutType.localeCompare(b.scoutType);
+    });
+
+    // Rearrange the fields so that submissionKey appears at the end
+    matchScoutData = matchScoutData.map(entry => {
+      const { submissionKey, ...rest } = entry;
+      return { ...rest, submissionKey };
+    });
+
+    // Log the fetched data to inspect
+    console.log("Match Scout Data:", matchScoutData);
 
     // Download as Excel
     downloadExcel(matchScoutData, "matchscout.xlsx");
