@@ -7,7 +7,8 @@ import Counter from "../../components/counter/counter";
 import Dropdown from "../../components/dropdown/dropdown";
 import TextInput from "../../components/textInput/textInput";
 import SubmitButton from "../../components/submitBtn/submitBtn";
-import "./ts.css"
+import "./ts.css";
+
 const CHOICEYESNO = ["Yes", "No"];
 const DEFAULT_STATE = {
   speakerCounter: 0,
@@ -36,7 +37,16 @@ const TeleopScoutForm = ({ username }) => {
       (value) => value === "" || value === undefined
     );
 
-    if (isFormIncomplete) {
+    // Optional: Remove climbComments and generalComments from required fields check
+    const requiredFields = { ...formState };
+    delete requiredFields.climbComments;
+    delete requiredFields.generalComments;
+
+    const isFormIncompleteExceptComments = Object.values(requiredFields).some(
+      (value) => value === "" || value === undefined
+    );
+
+    if (isFormIncompleteExceptComments) {
       toast.error("Form is not filled out completely");
       return;
     }
@@ -61,10 +71,17 @@ const TeleopScoutForm = ({ username }) => {
     }
   };
 
+  const handleClimbRatingChange = (value) => {
+    setFormState({ ...formState, climbRating: value });
+    if (value === "No Climb") {
+      setFormState({ ...formState, climbComments: "" });
+    }
+  };
+
   return (
     <div>
       <Header
-        toWhere={`/matchscout-team-form/${teamNumber}`}
+        toWhere={`/matchscout-team-form/${teamNumber}/auto`}
         headerText={
           <>
             <span style={{ color: "#FFFFFF" }}>Teleop</span>
@@ -97,7 +114,7 @@ const TeleopScoutForm = ({ username }) => {
           defaultOption={formState.trap}
         />
         <Dropdown
-          label="Human Player Atempted To Shoot :"
+          label="Human Player Attempted To Shoot :"
           options={CHOICEYESNO}
           onSelect={(value) =>
             setFormState({ ...formState, guyThrewTheRing: value })
@@ -116,19 +133,19 @@ const TeleopScoutForm = ({ username }) => {
         <Dropdown
           label="Climb Rating"
           options={["No Climb", "1", "2", "3", "4", "5"]}
-          onSelect={(value) =>
-            setFormState({ ...formState, climbRating: value })
-          }
+          onSelect={handleClimbRatingChange}
           defaultOption={formState.climbRating}
         />
-        <TextInput
-          label="Climb Comments"
-          name="climbComments"
-          value={formState.climbComments}
-          onChange={(e) =>
-            setFormState({ ...formState, climbComments: e.target.value })
-          }
-        />
+        {formState.climbRating !== "No Climb" && (
+          <TextInput
+            label="Climb Comments"
+            name="climbComments"
+            value={formState.climbComments}
+            onChange={(e) =>
+              setFormState({ ...formState, climbComments: e.target.value })
+            }
+          />
+        )}
 
         <Dropdown
           label="Did they do defense?"
@@ -138,6 +155,7 @@ const TeleopScoutForm = ({ username }) => {
           }
           defaultOption={formState.didTheyDoDefense}
         />
+        {/* Make General Comments field optional */}
         <TextInput
           label="General Comments"
           name="generalComments"

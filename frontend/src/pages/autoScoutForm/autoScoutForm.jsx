@@ -57,7 +57,7 @@ const AutoScoutForm = ({ username }) => {
   return (
     <div>
       <Header
-        toWhere={`/matchscout-team-form/${teamNumber}`}
+        toWhere={`/matchscout-team-choice`}
         headerText={
           <>
             <span style={{ color: "#FFFFFF" }}>Auto Scout</span>

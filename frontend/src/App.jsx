@@ -5,7 +5,6 @@ import AdminPage from "./pages/adminPage/adminPage";
 import Pitscoutpage from "./pages/pitScoutTeamSelectPage/pitScoutTeamSelectPage";
 import MatchscoutPage from "./pages/matchscoutPage/matchscoutPage";
 import PitScoutForm from "./pages/pitScoutForm/pitScoutForm";
-import SelectFormPage from "./pages/selectFormPage/selectFormPage";
 import AutoScoutForm from "./pages/autoScoutForm/autoScoutForm";
 import TeleopScoutForm from "./pages/teleopScoutForm/teleopScoutForm";
 import LoginPage from "./pages/loginPage/loginPage";
@@ -35,10 +34,7 @@ function App() {
       />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="/matchscout-team-choice" element={<MatchscoutPage />} />
-      <Route
-        path="/matchscout-team-form/:teamNumber"
-        element={<SelectFormPage />}
-      />
+
       <Route
         path="/matchscout-team-form/:teamNumber/auto"
         element={<AutoScoutForm username={username} />}
