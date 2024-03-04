@@ -15,7 +15,7 @@ const LoginPage = ({ changeUsername }) => {
   return (
     <div className="login">
       <form className="login-form" onSubmit={handleSubmit}>
-        <label htmlFor="userName" className="login-label">Your Name : </label>
+        <label htmlFor="userName" className="login-label">Full Name : </label>
         <input
           onChange={(e) => setUserName(e.target.value)}
           value={userName}

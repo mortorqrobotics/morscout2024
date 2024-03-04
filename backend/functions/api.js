@@ -1,15 +1,10 @@
 const express = require("express");
-const dotenv = require("dotenv");
 const cors = require("cors");
 const admin = require("firebase-admin");
 const excel = require("xlsx");
-const fs = require("fs");
-
-dotenv.config();
+const serverless = require('serverless-http')
 const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const router = express.Router()
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require("./serviceAccount.json");
@@ -63,17 +58,17 @@ const submitScoutForm = async (req, res, scoutType, collectionName) => {
 };
 
 // Endpoint for autoscout form
-app.post("/submit-autoscout/:teamNumber", async (req, res) => {
+router.post("/submit-autoscout/:teamNumber", async (req, res) => {
   submitScoutForm(req, res, "autoscout", "matchscout");
 });
 
 // Endpoint for teleopscout form
-app.post("/submit-teleopscout/:teamNumber", async (req, res) => {
+router.post("/submit-teleopscout/:teamNumber", async (req, res) => {
   submitScoutForm(req, res, "teleopscout", "matchscout");
 });
 
 // Endpoint for pitscout form
-app.post("/submit-pitscout/:teamNumber", async (req, res) => {
+router.post("/submit-pitscout/:teamNumber", async (req, res) => {
   submitScoutForm(req, res, "pitscout", "pitscout");
 });
 
@@ -98,7 +93,7 @@ const downloadExcel = (data, filename) => {
   excel.writeFile(wb, filename);
 };
 
-app.get("/pitscout", async (req, res) => {
+router.get("/pitscout", async (req, res) => {
   try {
     const pitScoutCollection = admin.firestore().collection("pitscout");
 
@@ -137,7 +132,7 @@ app.get("/pitscout", async (req, res) => {
 
 
 // Endpoint to fetch match scout data and download as Excel
-app.get("/matchscout", async (req, res) => {
+router.get("/matchscout", async (req, res) => {
   try {
     const matchScoutCollection = admin.firestore().collection("matchscout");
 
@@ -204,3 +199,11 @@ const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/.netlify/functions/api", router)
+module.exports.handler = serverless(app);

@@ -13,7 +13,11 @@ const MainPage = ({ username }) => {
         <Link to="/matchscout-team-choice">
           <DefaultBtn backgroundColor="#FF5F00" text="Match Scout" />
         </Link>
-        {username === "Sergey Safanovich" || username === "Kaylen Wi"   ? (
+        <Link to="/rankings">
+          <DefaultBtn backgroundColor="#FF5F00" text="Rankings" />
+        </Link>
+        {username === import.meta.env.VITE_ADMIN1 ||
+        username === import.meta.env.VITE_ADMIN2 ? (
           <Link to="/admin">
             <DefaultBtn backgroundColor="#FF5F00" text="Admin Page" />
           </Link>

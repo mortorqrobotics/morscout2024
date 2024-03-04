@@ -10,6 +10,7 @@ import TeleopScoutForm from "./pages/teleopScoutForm/teleopScoutForm";
 import LoginPage from "./pages/loginPage/loginPage";
 
 import { useEffect, useState } from "react";
+import Rankings from "./pages/rankings/rankings";
 function App() {
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<MainPage username={username}/>} />
+      <Route path="/" element={<MainPage username={username} />} />
       <Route
         path="/login"
         element={<LoginPage changeUsername={changeUsername} />}
@@ -38,6 +39,10 @@ function App() {
       <Route
         path="/matchscout-team-form/:teamNumber/auto"
         element={<AutoScoutForm username={username} />}
+      />
+      <Route
+        path="/rankings"
+        element={<Rankings/>}
       />
       <Route
         path="/matchscout-team-form/:teamNumber/teleop"
