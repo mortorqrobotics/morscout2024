@@ -11,14 +11,14 @@ const MatchButton = ({ teamNums, matchNum }) => {
       <hr />
       <div className="line">
         {teamNums.slice(0, 3).map((num, index) => (
-          <Link key={index} to={`/matchscout-team-form/${num}/auto`}>
+          <Link key={index} to={`/matchscout-team-form/${num}`}>
             <button className="blueButton">{num}</button>
           </Link>
         ))}
       </div>
       <div className="line">
         {teamNums.slice(3).map((num, index) => (
-          <Link key={index + 3} to={`/matchscout-team-form/${num}/auto`}>
+          <Link key={index + 3} to={`/matchscout-team-form/${num}`}>
             <button className="redButton">{num}</button>
           </Link>
         ))}

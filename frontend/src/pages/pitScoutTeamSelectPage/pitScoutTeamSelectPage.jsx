@@ -1,7 +1,7 @@
 import PitButton from "../../components/pitButton/pitButton";
 import Header from "../../components/header/header";
 import { useEffect, useState } from "react";
-import { getEventTeamsNumbers } from "../../api/tba";
+import { getEventTeamsNumbers } from "../../../api/tba";
 
 import { Link } from "react-router-dom";
 const Pitscoutpage = () => {

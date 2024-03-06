@@ -1,35 +1,8 @@
-// AdminPage.js
+import React from "react";
 import Header from "../../components/header/header";
-import { getScoutData } from "../../api/server"; // Adjust import path
-import { utils, writeFile } from "xlsx"; // Import specific functions from xlsx
-import "./adminPage.css";
+import DefaultBtn from "../../components/defaultBtn/defaultBtn";
 
 const AdminPage = () => {
-  const handlePullData = async (scoutType) => {
-    try {
-      // Fetch the scout data
-      const response = await getScoutData(scoutType);
-      if (response.ok) {
-        const data = await response.json();
-        // Generate spreadsheet
-        generateSpreadsheet(data, scoutType);
-        console.log(`${scoutType} data fetched successfully`);
-      } else {
-        console.error(`${scoutType} data fetch failed`);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      // Handle error if needed
-    }
-  };
-
-  const generateSpreadsheet = (data, scoutType) => {
-    const workbook = utils.book_new();
-    const worksheet = utils.json_to_sheet(data);
-    utils.book_append_sheet(workbook, worksheet, `${scoutType} Data`);
-    writeFile(workbook, `${scoutType}Data.xlsx`);
-  };
-
   return (
     <div>
       <Header
@@ -40,26 +13,9 @@ const AdminPage = () => {
           </>
         }
       />
-<<<<<<< HEAD
       <DefaultBtn text="Pull data" backgroundColor="#FF5F00" />
-=======
-      <div className="admin-btns">
-        <button
-          className="admin-btn"
-          onClick={() => handlePullData("matchscout")}
-        >
-          Pull Matchscout Data
-        </button>
-        <button
-          className="admin-btn"
-          onClick={() => handlePullData("pitscout")}
-        >
-          Pull Pitscout Data
-        </button>
-      </div>
->>>>>>> a93fbfe214eb97c361c09c4c7f3d98f480f393f3
     </div>
   );
-};
+};  
 
 export default AdminPage;
