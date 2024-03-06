@@ -2,16 +2,26 @@
 
 nav {
     display: flex;
-    justify-content: center;
     align-items: center;
     position: relative;
     height: 60px;
     margin-bottom: 30px;
+    top: 10px;
+    justify-content: flex-start;
 }
+
+
+@media screen and (max-width: 360px) {
+    .header-text{
+        font-size: 40px;
+    }
+  }
+
 nav h2 {
-    font-family: 'Maven Pro', sans-serif;
     font-weight: bold;
-    font-size: 50pt;
+    font-size: 40pt;
+    width: 100%;
+    text-align: center;
 }
 nav div {
     flex-grow: 1;

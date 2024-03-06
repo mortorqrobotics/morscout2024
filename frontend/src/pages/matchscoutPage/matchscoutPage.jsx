@@ -2,26 +2,34 @@ import React, { useState, useEffect } from "react";
 import "./matchscoutPage.css";
 import Header from "../../components/header/header";
 import MatchButton from "../../components/matchButton/matchButton";
-import { getEventMatches } from "../../../api/tba";
+import { getEventMatches } from "../../api/tba";
+import SearchBar from "../../components/searchbar/searchbar"; // Adjust the import path as needed
 
 const MatchscoutPage = () => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setLoading(true);
     getEventMatches()
       .then((data) => {
         const qmMatches = data.filter((match) => match.compLevel === "qm");
-
         const sortedMatches = qmMatches.sort((a, b) => a.matchNum - b.matchNum);
-
         setMatches(sortedMatches);
       })
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
+  const filteredMatches = matches.filter((match, index) =>
+    `MATCH ${match.matchNum}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
@@ -35,16 +43,16 @@ const MatchscoutPage = () => {
         }
       />
       <div className="match-buttons">
+        <SearchBar searchText="Enter Match Number..." onSearch={handleSearch} />
         {loading ? (
           <h1>Loading...</h1>
         ) : error ? (
           <h1>{error.message}</h1>
-        ) : matches.length > 0 ? (
+        ) : filteredMatches.length > 0 ? (
           <div className="Matches">
-            <p className="matchesTitleText">MATCHES</p>
-            {matches.map((match, index) => (
-              <div className="matchAndHeading" key={index}>
-                <Heading>{`MATCH ${index + 1}`}</Heading>
+            {filteredMatches.map((match) => (
+              <div className="matchAndHeading" key={match.matchNum}>
+                <Heading>{`MATCH ${match.matchNum}`}</Heading>
                 <MatchButton
                   teamNums={[
                     ...match.red_team.map((team) => team.substring(3)),
@@ -54,13 +62,13 @@ const MatchscoutPage = () => {
               </div>
             ))}
           </div>
-        ) : null}
+        ) : <p>No matches found</p>}
       </div>
     </div>
   );
 };
 
-// Assume Heading is a component you've defined elsewhere
+
 const Heading = ({ children }) => <h2 className="match-heading">{children}</h2>;
 
 export default MatchscoutPage;

@@ -1,113 +1,96 @@
-// src/components/AutoScoutForm.js
-import React, { useState } from "react";
-import Header from "../../components/header/header";
-import { useParams } from "react-router-dom";
-import TextInput from "../../components/textInput/textInput";
-import { toast } from "react-hot-toast";
+import { useState } from "react";
 import SubmitButton from "../../components/submitBtn/submitBtn";
+import Header from "../../components/header/header";
+import { toast } from "react-hot-toast";
+import { useParams, useNavigate } from "react-router-dom";
+import { submitAutoScout } from "../../api/server"; // Assuming you have a function for auto scouting
+import Counter from "../../components/counter/counter";
+import Dropdown from "../../components/dropdown/dropdown";
 
-const AutoScoutForm = () => {
-  let { teamNumber } = useParams();
-  const [formData, setFormData] = useState({
-    yourName: "",
-    teamName: "",
-    allianceColor: "",
-    matchNumber: "",
-    // Add more form fields as needed
-  });
+const CHOICEYESNO = ["Yes", "No"];
+const DEFAULT_STATE = {
+  speakerCounter: 0,
+  ampCounter: 0,
+  leftTheStation: "Yes"
+};
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+const AutoScoutForm = ({ username }) => {
+  const { teamNumber } = useParams();
+  const navigate = useNavigate();
+
+  const [formState, setFormState] = useState({ ...DEFAULT_STATE });
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormSubmitted(true);
 
-    const isFormIncomplete = Object.values(formData).some(
+    const isFormIncomplete = Object.values(formState).some(
       (value) => value === "" || value === undefined
     );
 
     if (isFormIncomplete) {
       toast.error("Form is not filled out completely");
-      console.log("Form is not filled out completely");
       return;
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8000/submit-autoscout/${teamNumber}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
+      const response = await submitAutoScout(teamNumber, {
+        ...formState,
+        username,
+      });
       if (response.ok) {
-        console.log("AutoScout form submitted successfully");
-        toast.success("AutoScout form submitted successfully");
-        setFormData({
-          yourName: "",
-          teamName: "",
-          allianceColor: "",
-          matchNumber: "",
-          // Reset other form fields as needed
-        });
+        toast.success("Auto Scout form submitted successfully");
+        setFormState({ ...DEFAULT_STATE });
+        navigate(`/matchscout-team-form/${teamNumber}/teleop`);
       } else {
-        console.error("AutoScout form submission failed");
-        toast.error("AutoScout form submission failed");
+        toast.error("Auto Scout form submission failed");
+        setFormSubmitted(false);
       }
     } catch (error) {
-      console.error(error);
       toast.error("Internal Server Error");
+      setFormSubmitted(false);
+      console.error(error);
     }
   };
 
   return (
     <div>
       <Header
-        toWhere={`/matchscout-team-form/${teamNumber}`}
+        toWhere={`/matchscout-team-choice`}
         headerText={
           <>
-            <span style={{ color: "#FFFFFF" }}>Auto</span>
+            <span style={{ color: "#FFFFFF" }}>Auto Scout</span>
           </>
         }
       />
-      <form onSubmit={handleSubmit} className="pitForm">
-        <TextInput
-          label="Your Name"
-          name="yourName"
-          value={formData.yourName}
-          onChange={handleChange}
+      <form onSubmit={handleSubmit} className="autoScout">
+        <Counter
+          label="Speaker Counter"
+          name="speakerCounter"
+          value={formState.speakerCounter}
+          onChange={(name, value) =>
+            setFormState({ ...formState, [name]: value })
+          }
         />
 
-        <TextInput
-          label="Team Name"
-          name="teamName"
-          value={formData.teamName}
-          onChange={handleChange}
+        <Counter
+          label="Amp Counter"
+          name="ampCounter"
+          value={formState.ampCounter}
+          onChange={(name, value) =>
+            setFormState({ ...formState, [name]: value })
+          }
         />
 
-        <TextInput
-          label="Alliance Color"
-          name="allianceColor"
-          value={formData.allianceColor}
-          onChange={handleChange}
+        <Dropdown
+          label="Robot left the station?"
+          options={CHOICEYESNO}
+          onSelect={(value) => setFormState({ ...formState, leftTheStation: value })}
+          defaultOption={formState.leftTheStation}
         />
 
-        <TextInput
-          label="Match Number"
-          name="matchNumber"
-          value={formData.matchNumber}
-          onChange={handleChange}
-        />
-        <SubmitButton label="Submit" />
+        <SubmitButton label={formSubmitted ? "Submitting..." : "Submit"} />
       </form>
     </div>
   );
